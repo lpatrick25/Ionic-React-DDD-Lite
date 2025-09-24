@@ -1,0 +1,150 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>
+      {{ isEditMode ? 'Edit User' : 'Create New User' }}
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
+
+      <!-- Personal Information -->
+      <ion-item>
+        <ion-label position="stacked">First Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input
+          formControlName="firstName"
+          type="text"
+          placeholder="Enter first name">
+        </ion-input>
+        <ion-note *ngIf="f['firstName'].invalid && f['firstName'].touched" color="danger" slot="error">
+          {{ getErrorMessage('firstName') }}
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Middle Name</ion-label>
+        <ion-input
+          formControlName="middleName"
+          type="text"
+          placeholder="Enter middle name (optional)">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Last Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input
+          formControlName="lastName"
+          type="text"
+          placeholder="Enter last name">
+        </ion-input>
+        <ion-note *ngIf="f['lastName'].invalid && f['lastName'].touched" color="danger" slot="error">
+          {{ getErrorMessage('lastName') }}
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Extension Name</ion-label>
+        <ion-input
+          formControlName="extensionName"
+          type="text"
+          placeholder="Jr., Sr., etc. (optional)">
+        </ion-input>
+      </ion-item>
+
+      <!-- Contact Information -->
+      <ion-item>
+        <ion-label position="stacked">Phone Number <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input
+          formControlName="phoneNumber"
+          type="tel"
+          placeholder="09xxxxxxxxx">
+        </ion-input>
+        <ion-note *ngIf="f['phoneNumber'].invalid && f['phoneNumber'].touched" color="danger" slot="error">
+          {{ getErrorMessage('phoneNumber') }}
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Email <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input
+          formControlName="email"
+          type="email"
+          placeholder="user@example.com">
+        </ion-input>
+        <ion-note *ngIf="f['email'].invalid && f['email'].touched" color="danger" slot="error">
+          {{ getErrorMessage('email') }}
+        </ion-note>
+      </ion-item>
+
+      <!-- Password -->
+      <ion-item>
+        <ion-label position="stacked">
+          {{ isEditMode ? 'New Password (leave empty to keep current)' : 'Password' }}
+          <span *ngIf="!isEditMode"><ion-text color="danger">*</ion-text></span>
+        </ion-label>
+        <ion-input
+          formControlName="password"
+          type="password"
+          placeholder="Enter password">
+        </ion-input>
+        <ion-note *ngIf="f['password'].invalid && f['password'].touched" color="danger" slot="error">
+          {{ getErrorMessage('password') }}
+        </ion-note>
+      </ion-item>
+
+      <!-- Role Selection -->
+      <ion-item>
+        <ion-label position="stacked">Role <ion-text color="danger">*</ion-text></ion-label>
+        <ion-select formControlName="role" interface="action-sheet">
+          <ion-select-option *ngFor="let role of roles" [value]="role">
+            {{ role }}
+          </ion-select-option>
+        </ion-select>
+        <ion-note *ngIf="f['role'].invalid && f['role'].touched" color="danger" slot="error">
+          Role is required
+        </ion-note>
+      </ion-item>
+
+      <!-- Status Toggle -->
+      <ion-item>
+        <ion-label>Status</ion-label>
+        <ion-toggle
+          formControlName="status"
+          [color]="f['status'].value ? 'success' : 'danger'"
+          slot="end">
+          <ion-note slot="start">{{ f['status'].value ? 'Active' : 'Inactive' }}</ion-note>
+        </ion-toggle>
+      </ion-item>
+
+      <!-- Form Validation Summary (Optional) -->
+      <ion-item *ngIf="getFormErrorsCount() > 0" color="warning">
+        <ion-icon name="alert-circle-outline" slot="start" color="warning"></ion-icon>
+        <ion-label>
+          <h3>Form has {{ getFormErrorsCount() }} error{{ getFormErrorsCount() !== 1 ? 's' : '' }}</h3>
+          <p>Please fix the errors above to continue.</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Action Buttons -->
+      <div class="ion-padding">
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="!isFormValid() || isLoading"
+          color="primary">
+          <ion-spinner *ngIf="isLoading" name="crescent" slot="start"></ion-spinner>
+          {{ isEditMode ? 'Update User' : 'Create User' }}
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="clear"
+          (click)="onCancel()"
+          [disabled]="isLoading"
+          color="medium">
+          Cancel
+        </ion-button>
+      </div>
+    </form>
+  </ion-card-content>
+</ion-card>

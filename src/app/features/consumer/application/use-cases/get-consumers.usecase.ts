@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { USER_REPOSITORY, ConsumerRepository } from '../../domain/repositories/consumer.repository';
+import { CONSUMER_REPOSITORY, ConsumerRepository } from '../../domain/repositories/consumer.repository';
 import { ConsumerResponse } from '../../domain/entities/consumer.entity';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { ConsumerResponse } from '../../domain/entities/consumer.entity';
 })
 export class GetConsumersUseCase {
   constructor(
-    @Inject(USER_REPOSITORY) private consumerRepository: ConsumerRepository
+    @Inject(CONSUMER_REPOSITORY) private consumerRepository: ConsumerRepository
   ) {}
 
   execute(page: number = 1, perPage: number = 10): Observable<ConsumerResponse> {

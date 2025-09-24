@@ -1,0 +1,156 @@
+<ion-card>
+  <ion-card-content>
+    <form [formGroup]="meterForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Validation Summary -->
+      <ion-item
+        *ngIf="getFormErrorsCount() > 0 && meterForm.touched"
+        color="warning"
+        lines="none"
+        class="error-summary"
+      >
+        <ion-icon
+          name="alert-circle-outline"
+          slot="start"
+          color="warning"
+        ></ion-icon>
+        <ion-label>
+          <h3>
+            Form has {{ getFormErrorsCount() }} error{{
+              getFormErrorsCount() !== 1 ? "s" : ""
+            }}
+          </h3>
+          <p>Please fix the errors below to continue.</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Personal Information -->
+
+      <!-- Consumer Selection -->
+      <ion-item>
+        <ion-label position="stacked">
+          Concessionaire <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-select
+          formControlName="concessionaireId"
+          interface="action-sheet"
+          placeholder="Select consumer"
+        >
+          <ion-select-option
+            *ngFor="let consumer of consumers"
+            [value]="consumer.id"
+          >
+            {{ consumer.fullName }} ({{ consumer.accountNumber }})
+          </ion-select-option>
+        </ion-select>
+        <ion-note
+          *ngIf="f['concessionaireId'].invalid && f['concessionaireId'].touched"
+          color="danger"
+          slot="error"
+        >
+          Concessionaire is required
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked"
+          >Meter Number <ion-text color="danger">*</ion-text></ion-label
+        >
+        <ion-input
+          formControlName="meterNumber"
+          type="text"
+          placeholder="Enter meter number"
+        >
+        </ion-input>
+        <ion-note
+          *ngIf="f['meterNumber'].invalid && f['meterNumber'].touched"
+          color="danger"
+          slot="error"
+        >
+          {{ getErrorMessage("meterNumber") }}
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked"
+          >Installation Date <ion-text color="danger">*</ion-text></ion-label
+        >
+        <ion-input
+          formControlName="installationDate"
+          type="date"
+          placeholder="Enter installation date"
+        >
+        </ion-input>
+        <ion-note
+          *ngIf="f['installationDate'].invalid && f['installationDate'].touched"
+          color="danger"
+          slot="error"
+        >
+          {{ getErrorMessage("installationDate") }}
+        </ion-note>
+      </ion-item>
+
+      <!-- Address Selection -->
+      <ion-item>
+        <ion-label position="stacked"
+          >Service Address <ion-text color="danger">*</ion-text></ion-label
+        >
+        <ion-select formControlName="serviceAddress" interface="action-sheet">
+          <ion-select-option
+            *ngFor="let address of addresses"
+            [value]="address"
+          >
+            Brgy. {{ address }}, MacArthur, Leyte
+          </ion-select-option>
+        </ion-select>
+        <ion-note
+          *ngIf="f['serviceAddress'].invalid && f['serviceAddress'].touched"
+          color="danger"
+          slot="error"
+        >
+          Service Address is required
+        </ion-note>
+      </ion-item>
+
+      <!-- Status Toggle -->
+      <ion-item>
+        <ion-label>Status</ion-label>
+        <ion-toggle
+          formControlName="status"
+          [color]="f['status'].value ? 'success' : 'danger'"
+          slot="end"
+        >
+          <ion-note slot="start">{{
+            f["status"].value ? "Active" : "Inactive"
+          }}</ion-note>
+        </ion-toggle>
+      </ion-item>
+
+      <!-- Action Buttons -->
+      <div class="ion-padding">
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="isLoading"
+          color="primary"
+        >
+          <ion-spinner
+            *ngIf="isLoading"
+            name="crescent"
+            slot="start"
+          ></ion-spinner>
+          {{ isEditMode ? "Update Meter" : "Create Meter" }}
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="clear"
+          (click)="onCancel()"
+          [disabled]="isLoading"
+          color="medium"
+        >
+          Cancel
+        </ion-button>
+      </div>
+    </form>
+  </ion-card-content>
+</ion-card>

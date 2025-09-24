@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import {
-  USER_REPOSITORY,
+  CONSUMER_REPOSITORY,
   ConsumerRepository,
 } from '../../domain/repositories/consumer.repository';
 import { ConsumerFormData, CreateConsumerDto } from '../dto/consumer.dto';
@@ -13,7 +13,7 @@ import { STATUS, type Status } from '../../../../core/constants/api.constants';
 })
 export class CreateConsumerUseCase {
   constructor(
-    @Inject(USER_REPOSITORY) private consumerRepository: ConsumerRepository
+    @Inject(CONSUMER_REPOSITORY) private consumerRepository: ConsumerRepository
   ) {}
 
   execute(formData: ConsumerFormData): Observable<ConsumerEntity> {

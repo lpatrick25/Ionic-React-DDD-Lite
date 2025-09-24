@@ -1,10 +1,4 @@
 <ion-card>
-  <ion-card-header>
-    <ion-card-title>
-      {{ isEditMode ? "Edit Consumer" : "Create New Consumer" }}
-    </ion-card-title>
-  </ion-card-header>
-
   <ion-card-content>
     <form [formGroup]="consumerForm" (ngSubmit)="onSubmit()" novalidate>
       <!-- Validation Summary -->

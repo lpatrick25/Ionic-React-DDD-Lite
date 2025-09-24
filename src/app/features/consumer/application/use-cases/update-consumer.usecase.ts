@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { USER_REPOSITORY, ConsumerRepository } from '../../domain/repositories/consumer.repository';
+import { CONSUMER_REPOSITORY, ConsumerRepository } from '../../domain/repositories/consumer.repository';
 import { ConsumerEntity } from '../../domain/entities/consumer.entity';
 import { ConsumerFormData } from '../dto/consumer.dto';
 import { ROLES, STATUS } from '../../../../core/constants/api.constants';
@@ -10,7 +10,7 @@ import { ROLES, STATUS } from '../../../../core/constants/api.constants';
 })
 export class UpdateConsumerUseCase {
   constructor(
-    @Inject(USER_REPOSITORY) private consumerRepository: ConsumerRepository
+    @Inject(CONSUMER_REPOSITORY) private consumerRepository: ConsumerRepository
   ) {}
 
   execute(id: number, formData: ConsumerFormData, currentConsumer: ConsumerEntity): Observable<ConsumerEntity> {

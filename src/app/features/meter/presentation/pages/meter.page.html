@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Meters</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onCreateMeter()">
+        <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-meter-list
+    [meters]="(meters$ | async) || []"
+    [isLoading]="(isLoading$ | async) ?? false"
+    [totalCount]="(pagination$ | async)?.totalCount || 0"
+    [currentPage]="(pagination$ | async)?.currentPage || 1"
+    [totalPages]="(pagination$ | async)?.totalPages || 1"
+    (editMeter)="onEditMeter($event)"
+    (deleteMeter)="onDeleteMeter($event)"
+    (pageChange)="onPageChange($event)"
+    (search)="onSearch($event)">
+  </app-meter-list>
+</ion-content>

@@ -17,7 +17,7 @@ import { CreateConsumerUseCase } from './application/use-cases/create-consumer.u
 import { GetConsumersUseCase } from './application/use-cases/get-consumers.usecase';
 import { UpdateConsumerUseCase } from './application/use-cases/update-consumer.usecase';
 import { DeleteConsumerUseCase } from './application/use-cases/delete-consumer.usecase';
-import { USER_REPOSITORY } from './domain/repositories/consumer.repository';
+import { CONSUMER_REPOSITORY } from './domain/repositories/consumer.repository';
 
 // 👇 Add child route here
 const routes: Routes = [
@@ -51,7 +51,7 @@ const routes: Routes = [
     DeleteConsumerUseCase,
 
     // Repository binding
-    { provide: USER_REPOSITORY, useExisting: ConsumerApiRepository }
+    { provide: CONSUMER_REPOSITORY, useExisting: ConsumerApiRepository }
   ]
 })
 export class ConsumerModule { }

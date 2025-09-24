@@ -1,0 +1,41 @@
+ion-card {
+  --background: var(--ion-color-light);
+  margin: 16px;
+}
+
+ion-card-header {
+  --background: var(--ion-color-primary-tint);
+}
+
+ion-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+ion-item {
+  --border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+ion-note[color="danger"] {
+  font-size: 0.8rem;
+  padding: 4px 16px;
+}
+
+.error-summary {
+  --background: var(--ion-color-warning-tint);
+  --color: var(--ion-color-warning-contrast);
+  margin-bottom: 16px;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+ion-button {
+  --border-radius: 8px;
+}
+
+.ion-padding {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

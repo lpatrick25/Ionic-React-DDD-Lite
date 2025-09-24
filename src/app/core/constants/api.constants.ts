@@ -1,7 +1,8 @@
 export const API_ENDPOINTS = {
   BASE_URL: 'http://192.168.100.8:8000/api', // Replace with your actual API URL
   USERS: '/users',
-  CONSUMERS: '/concessionaires'
+  CONSUMERS: '/concessionaires',
+  METERS: '/meters'
 } as const;
 
 export const ROLES = {

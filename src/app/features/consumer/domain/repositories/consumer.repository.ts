@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Consumer, ConsumerResponse } from '../entities/consumer.entity';
 
 // Create injection token for the repository interface
-export const USER_REPOSITORY = new InjectionToken<ConsumerRepository>('ConsumerRepository');
+export const CONSUMER_REPOSITORY = new InjectionToken<ConsumerRepository>('ConsumerRepository');
 
 export interface ConsumerRepository {
   getConsumers(page?: number, perPage?: number): Observable<ConsumerResponse>;

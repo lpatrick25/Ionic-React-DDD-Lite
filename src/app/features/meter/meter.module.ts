@@ -22,7 +22,6 @@ import { GetConsumersUseCase } from '../consumer/application/use-cases/get-consu
 import { ConsumerApiRepository } from '../consumer/infrastructure/consumer-api.repository';
 import { CONSUMER_REPOSITORY } from '../consumer/domain/repositories/consumer.repository';
 
-// 👇 Add child route here
 const routes: Routes = [
   {
     path: '',
@@ -41,7 +40,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes) // 👈 important
+    RouterModule.forChild(routes)
   ],
   providers: [
     // Infrastructure
@@ -52,7 +51,6 @@ const routes: Routes = [
     GetMetersUseCase,
     UpdateMeterUseCase,
     DeleteMeterUseCase,
-
     GetConsumersUseCase,
 
     // Repository binding

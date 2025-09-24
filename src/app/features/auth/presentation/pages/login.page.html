@@ -1,0 +1,20 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="login-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="person-circle-outline" class="login-icon"></ion-icon>
+          Login
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <app-login-form
+          [isLoading]="(isLoading$ | async) ?? false"
+          (formSubmit)="onLogin($event.formData)"
+          (formCancel)="onCancel()">
+        </app-login-form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,35 +1,41 @@
 <ion-item *ngFor="let user of users; trackBy: trackByUserId" lines="full">
-  <ion-avatar slot="start">
-    <ion-icon [name]="user.isAdmin() ? 'person-circle-outline' : 'person-outline'" size="large"></ion-icon>
+  <!-- Avatar -->
+  <ion-avatar slot="start" class="list-avatar">
+    <ion-icon
+      [name]="user.isAdmin() ? 'person-circle-outline' : 'person-outline'"
+    ></ion-icon>
   </ion-avatar>
 
+  <!-- Main Info -->
   <ion-label>
     <h2>{{ user.fullName }}</h2>
-    <p>{{ user.email }}</p>
-    <p>{{ user.phoneNumber }}</p>
+    <p>
+      <ion-icon name="mail-outline" class="inline-icon"></ion-icon>
+      {{ user.email }}
+    </p>
+    <p>
+      <ion-icon name="call-outline" class="inline-icon"></ion-icon>
+      {{ user.phoneNumber }}
+    </p>
   </ion-label>
 
+  <!-- Role -->
   <ion-badge [color]="getRoleColor(user.role)" slot="end">
     {{ user.role }}
   </ion-badge>
 
+  <!-- Status -->
   <ion-badge [color]="isUserActive(user) ? 'success' : 'danger'" slot="end">
     {{ getDisplayStatus(user.status) }}
   </ion-badge>
 
-  <ion-button
-    slot="end"
-    fill="clear"
-    color="medium"
-    (click)="onEditUser(user)">
-    <ion-icon name="create-outline" slot="icon-only"></ion-icon>
-  </ion-button>
-
-  <ion-button
-    slot="end"
-    fill="clear"
-    color="danger"
-    (click)="onDeleteUser(user.id!)">
-    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-  </ion-button>
+  <!-- Actions -->
+  <ion-buttons slot="end">
+    <ion-button fill="clear" color="medium" (click)="onEditUser(user)">
+      <ion-icon name="create-outline"></ion-icon>
+    </ion-button>
+    <ion-button fill="clear" color="danger" (click)="onDeleteUser(user.id!)">
+      <ion-icon name="trash-outline"></ion-icon>
+    </ion-button>
+  </ion-buttons>
 </ion-item>

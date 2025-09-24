@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/ui/main-layout/main-layout.component';
-// import { LoginComponent } from './features/auth/login/login.component';
 
 const routes: Routes = [
   // Default route → redirect to login
-  { path: '', redirectTo: 'users', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // Public route (no menu/layout)
-  // { path: 'login', component: MainLayoutComponent },
+  {
+    path: 'login',
+    loadChildren: () =>
+      import('./features/auth/auth.module').then((m) => m.AuthModule),
+  },
 
   // Protected routes inside MainLayout (with menu)
   {
@@ -23,7 +26,9 @@ const routes: Routes = [
       {
         path: 'consumers',
         loadChildren: () =>
-          import('./features/consumer/consumer.module').then((m) => m.ConsumerModule),
+          import('./features/consumer/consumer.module').then(
+            (m) => m.ConsumerModule
+          ),
       },
       {
         path: 'meters',

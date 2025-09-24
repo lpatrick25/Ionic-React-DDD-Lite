@@ -29,7 +29,6 @@ export interface ApiConsumerResponse {
 }
 
 // Domain Consumer interface - Clean model for business logic
-// Fix: Add method signatures to interface
 export interface Consumer {
   id?: number;
   accountNumber?: string;

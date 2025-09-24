@@ -12,6 +12,8 @@ import { CoreModule } from './core/core.module';
 
 // Feature Modules
 import { UserModule } from './features/user/user.module';
+import { ConsumerModule } from './features/consumer/consumer.module';
+import { MeterModule } from './features/meter/meter.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { UserModule } from './features/user/user.module';
     AppRoutingModule,
     HttpClientModule,
     CoreModule,
-    UserModule
+    UserModule,
+    ConsumerModule,
+    MeterModule,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

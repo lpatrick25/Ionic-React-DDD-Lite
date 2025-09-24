@@ -1,0 +1,40 @@
+/* Avatar with centered icon */
+.list-avatar {
+  background: var(--ion-color-light-shade);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-avatar ion-icon {
+  font-size: 2rem;
+  color: var(--ion-color-medium);
+}
+
+/* Inline icons inside text */
+.inline-icon {
+  font-size: 1rem;
+  margin-right: 4px;
+  vertical-align: middle;
+  color: var(--ion-color-medium);
+}
+
+/* Label spacing */
+ion-label h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--ion-text-color);
+}
+
+ion-label p {
+  font-size: 0.85rem;
+  margin: 2px 0;
+  color: var(--ion-color-medium);
+}
+
+/* Address badge */
+.address-badge {
+  margin-top: 6px;
+  font-size: 0.75rem;
+}

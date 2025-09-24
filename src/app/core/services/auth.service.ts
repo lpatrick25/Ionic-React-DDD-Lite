@@ -7,14 +7,17 @@ import { Router } from '@angular/router';
 import { API_ENDPOINTS } from '../constants/api.constants';
 
 export interface LoginResponse {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-  user: {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
+  code: number;
+  message: string;
+  content: {
+    token: string;
+    user: {
+      id: number;
+      full_name: string;
+      status: string;
+      email: string;
+      role: string;
+    };
   };
 }
 
@@ -26,11 +29,12 @@ export interface User {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private _storage: Storage | null = null;
-  private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  private currentUserSubject: BehaviorSubject<User | null> =
+    new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(
@@ -69,19 +73,28 @@ export class AuthService {
   login(email: string, password: string): Observable<LoginResponse> {
     const loginData = { email, password };
 
-    return this.http.post<LoginResponse>(`${API_ENDPOINTS.BASE_URL}/login`, loginData).pipe(
-      tap(async (response: LoginResponse) => {
-        if (response.access_token && this._storage) {
-          try {
-            await this._storage.set('auth_token', response.access_token);
-            await this._storage.set('user', response.user);
-            this.currentUserSubject.next(response.user);
-          } catch (error) {
-            console.error('Error storing auth data:', error);
+    return this.http
+      .post<LoginResponse>(`${API_ENDPOINTS.BASE_URL}/login`, loginData)
+      .pipe(
+        tap(async (response: LoginResponse) => {
+          if (response.content?.token && this._storage) {
+            try {
+              await this._storage.set('auth_token', response.content.token);
+              await this._storage.set('user', response.content.user);
+
+              // Normalize to your app’s User model
+              this.currentUserSubject.next({
+                id: response.content.user.id,
+                name: response.content.user.full_name,
+                email: response.content.user.email,
+                role: response.content.user.role,
+              });
+            } catch (error) {
+              console.error('Error storing auth data:', error);
+            }
           }
-        }
-      })
-    );
+        })
+      );
   }
 
   register(userData: any): Observable<any> {

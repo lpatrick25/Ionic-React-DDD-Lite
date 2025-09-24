@@ -3,16 +3,22 @@
   [expand]="expand"
   [fill]="fill"
   [color]="color"
-  [disabled]="disabled"
-  [loading]="loading"
+  [disabled]="disabled || loading"
   (click)="onClick()"
-  *ngIf="!loading || showSpinner"
 >
-  <ion-icon [name]="icon" slot="start" *ngIf="icon"></ion-icon>
+  <!-- Show spinner if loading -->
   <ion-spinner
     *ngIf="loading && showSpinner"
     name="crescent"
     slot="start"
   ></ion-spinner>
+
+  <!-- Show icon only if not loading -->
+  <ion-icon
+    *ngIf="icon && !(loading && showSpinner)"
+    [name]="icon"
+    slot="start"
+  ></ion-icon>
+
   <ng-content></ng-content>
 </ion-button>

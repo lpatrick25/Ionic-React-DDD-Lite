@@ -1,7 +1,8 @@
 import { environment } from 'src/environments/environment';
 
 export const API_ENDPOINTS = {
-  BASE_URL: environment.apiUrl, // Replace with your actual API URL
+  BASE_URL: environment.apiUrl,
+  LOGIN: '/login',
   USERS: '/users',
   CONSUMERS: '/concessionaires',
   METERS: '/meters'

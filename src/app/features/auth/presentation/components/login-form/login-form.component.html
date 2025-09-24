@@ -1,0 +1,93 @@
+<ion-card>
+
+  <ion-card-content>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Validation Summary -->
+      <ion-item
+        *ngIf="getFormErrorsCount() > 0 && loginForm.touched"
+        color="warning"
+        lines="none"
+        class="error-summary"
+      >
+        <ion-icon
+          name="alert-circle-outline"
+          slot="start"
+          color="warning"
+        ></ion-icon>
+        <ion-label>
+          <h3>
+            Form has {{ getFormErrorsCount() }} error{{
+              getFormErrorsCount() !== 1 ? "s" : ""
+            }}
+          </h3>
+          <p>Please fix the errors below to continue.</p>
+        </ion-label>
+      </ion-item>
+
+      <!-- Email -->
+      <ion-item>
+        <ion-label position="stacked">
+          Email <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input
+          type="email"
+          formControlName="email"
+          placeholder="user@example.com"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['email'].invalid && f['email'].touched"
+          color="danger"
+          slot="error"
+        >
+          {{ getErrorMessage("email") }}
+        </ion-note>
+      </ion-item>
+
+      <!-- Password -->
+      <ion-item>
+        <ion-label position="stacked">
+          Password <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input
+          type="password"
+          formControlName="password"
+          placeholder="Enter password"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['password'].invalid && f['password'].touched"
+          color="danger"
+          slot="error"
+        >
+          {{ getErrorMessage("password") }}
+        </ion-note>
+      </ion-item>
+
+      <!-- Action Buttons -->
+      <div class="ion-padding">
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="isLoading"
+          color="primary"
+        >
+          <ion-spinner
+            *ngIf="isLoading"
+            name="crescent"
+            slot="start"
+          ></ion-spinner>
+          Login
+        </ion-button>
+
+        <!-- <ion-button
+          expand="block"
+          fill="clear"
+          (click)="onCancel()"
+          [disabled]="isLoading"
+          color="medium"
+        >
+          Cancel
+        </ion-button> -->
+      </div>
+    </form>
+  </ion-card-content>
+</ion-card>

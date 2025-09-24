@@ -1,0 +1,19 @@
+<ion-item>
+  <ion-label *ngIf="label" position="stacked">
+    {{ label }}
+    <ion-text *ngIf="required" color="danger">*</ion-text>
+  </ion-label>
+
+  <ion-input
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    (ionInput)="onInput($event)"
+    (ionBlur)="onBlur()"
+    [disabled]="disabled"
+  ></ion-input>
+
+  <ion-note *ngIf="errorMessage" color="danger" slot="error">
+    {{ errorMessage }}
+  </ion-note>
+</ion-item>

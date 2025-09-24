@@ -1,14 +1,34 @@
 <ion-header [translucent]="true">
+  <!-- Main Toolbar -->
   <ion-toolbar>
+    <!-- Menu Button -->
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+
+    <!-- Title -->
     <ion-title>Consumers</ion-title>
+
+    <!-- Add Consumer Button -->
     <ion-buttons slot="end">
-      <ion-button (click)="onCreateConsumer()">
-        <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+      <ion-button
+        fill="clear"
+        color="primary"
+        (click)="onCreateConsumer()"
+        aria-label="Create Consumer"
+      >
+        <ion-icon name="person-add-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Search Toolbar -->
+  <ion-toolbar>
+    <ion-searchbar
+      debounce="400"
+      placeholder="Search consumers..."
+      (ionInput)="onSearch('as')"
+    ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 

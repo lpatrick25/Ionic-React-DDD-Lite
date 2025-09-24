@@ -1,22 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { IonButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-shared-button',
-  template: `
-    <ion-button
-      [type]="type"
-      [expand]="expand"
-      [fill]="fill"
-      [color]="color"
-      [disabled]="disabled"
-      [loading]="loading"
-      (click)="onClick()"
-      *ngIf="!loading || showSpinner">
-      <ion-icon [name]="icon" slot="start" *ngIf="icon"></ion-icon>
-      <ion-spinner *ngIf="loading && showSpinner" name="crescent" slot="start"></ion-spinner>
-      <ng-content></ng-content>
-    </ion-button>
-  `
+  templateUrl: './shared-button.component.html',
+  styleUrls: ['./shared-button.component.scss'],
+  standalone: true,
+  imports: [IonButton, IonIcon, IonSpinner, CommonModule],
 })
 export class SharedButtonComponent {
   @Input() type: 'button' | 'submit' | 'reset' = 'button';

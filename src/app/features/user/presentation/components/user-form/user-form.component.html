@@ -1,9 +1,4 @@
 <ion-card>
-  <ion-card-header>
-    <ion-card-title>
-      {{ isEditMode ? 'Edit User' : 'Create New User' }}
-    </ion-card-title>
-  </ion-card-header>
 
   <ion-card-content>
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>

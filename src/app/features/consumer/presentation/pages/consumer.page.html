@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Consumers</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="onCreateConsumer()">
@@ -19,6 +22,7 @@
     (editConsumer)="onEditConsumer($event)"
     (deleteConsumer)="onDeleteConsumer($event)"
     (pageChange)="onPageChange($event)"
-    (search)="onSearch($event)">
+    (search)="onSearch($event)"
+  >
   </app-consumer-list>
 </ion-content>

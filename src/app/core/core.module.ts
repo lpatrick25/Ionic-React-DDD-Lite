@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { IonicModule } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
 
 // Services
 import { ApiService } from './services/api.service';
@@ -15,11 +17,20 @@ import { ErrorInterceptor } from './interceptors/error.interceptor';
 // Guards
 import { AuthGuard } from './guards/auth.guard';
 
+// UI Components
+import { MainLayoutComponent } from './ui/main-layout/main-layout.component';
+import { MenuComponent } from './ui/menu/menu.component';
+
 @NgModule({
-  declarations: [],
+  declarations: [
+    MainLayoutComponent,
+    MenuComponent
+  ],
   imports: [
     CommonModule,
+    IonicModule,
     FormsModule,
+    RouterModule,
     ReactiveFormsModule,
     IonicStorageModule.forRoot()
   ],
@@ -37,6 +48,9 @@ import { AuthGuard } from './guards/auth.guard';
       useClass: ErrorInterceptor,
       multi: true
     }
+  ],
+  exports: [
+    MainLayoutComponent,
   ]
 })
 export class CoreModule { }

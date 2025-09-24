@@ -1,4 +1,7 @@
-<ion-item *ngFor="let consumer of consumers; trackBy: trackByConsumerId" lines="full">
+<ion-item
+  *ngFor="let consumer of consumers; trackBy: trackByConsumerId"
+  lines="full"
+>
   <ion-avatar slot="start">
     <ion-icon [name]="'person-outline'" size="large"></ion-icon>
   </ion-avatar>
@@ -7,13 +10,15 @@
     <h2>{{ consumer.fullName }}</h2>
     <p>{{ consumer.email }}</p>
     <p>{{ consumer.phoneNumber }}</p>
+    <ion-badge>
+      Brgy. {{ consumer.address }}, MacArthur, Leyte
+    </ion-badge>
   </ion-label>
 
-  <ion-badge slot="end">
-    Brgy. {{ consumer.address }}, MacArthur, Leyte
-  </ion-badge>
-
-  <ion-badge [color]="isConsumerActive(consumer) ? 'success' : 'danger'" slot="end">
+  <ion-badge
+    [color]="isConsumerActive(consumer) ? 'success' : 'danger'"
+    slot="end"
+  >
     {{ getDisplayStatus(consumer.status) }}
   </ion-badge>
 
@@ -21,7 +26,8 @@
     slot="end"
     fill="clear"
     color="medium"
-    (click)="onEditConsumer(consumer)">
+    (click)="onEditConsumer(consumer)"
+  >
     <ion-icon name="create-outline" slot="icon-only"></ion-icon>
   </ion-button>
 
@@ -29,7 +35,8 @@
     slot="end"
     fill="clear"
     color="danger"
-    (click)="onDeleteConsumer(consumer.id!)">
+    (click)="onDeleteConsumer(consumer.id!)"
+  >
     <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
   </ion-button>
 </ion-item>

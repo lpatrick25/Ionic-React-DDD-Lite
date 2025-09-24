@@ -1,0 +1,24 @@
+<ion-menu contentId="main-content" type="overlay">
+  <ion-content>
+    <ion-list>
+      <ion-list-header>Navigation</ion-list-header>
+
+      <ion-menu-toggle auto-hide="false" *ngFor="let item of menuItems">
+        <ion-item
+          [routerLink]="item.url"
+          routerDirection="root"
+          lines="none"
+          detail="false"
+          routerLinkActive="selected"
+        >
+          <ion-icon
+            slot="start"
+            [name]="item.icon"
+            aria-hidden="true"
+          ></ion-icon>
+          <ion-label>{{ item.title }}</ion-label>
+        </ion-item>
+      </ion-menu-toggle>
+    </ion-list>
+  </ion-content>
+</ion-menu>

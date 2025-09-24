@@ -1,12 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnChanges,
-  SimpleChanges,
-  OnInit,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -38,7 +30,7 @@ interface ErrorMessages {
   password: ErrorMessageConfig;
 }
 
-// Fix: Define valid field names as a union type
+// Define valid field names as a union type
 type FormFieldName =
   | 'firstName'
   | 'lastName'
@@ -52,7 +44,7 @@ type FormFieldName =
   styleUrls: ['./user-form.component.scss'],
   standalone: false,
 })
-export class UserFormComponent implements OnChanges, OnInit {
+export class UserFormComponent implements OnInit {
   @Input() user?: UserEntity | null;
   @Input() isLoading = false;
   @Output() formSubmit = new EventEmitter<{
@@ -70,25 +62,11 @@ export class UserFormComponent implements OnChanges, OnInit {
   }
 
   ngOnInit() {
+    // Set edit mode based on whether a user is provided
     this.isEditMode = !!this.user;
 
-    if (this.user) {
-      this.populateForm(this.user);
-    }
-
-    // If edit mode, make password optional
-    if (this.isEditMode) {
-      const passwordControl = this.userForm.get('password');
-      if (passwordControl) {
-        passwordControl.clearValidators();
-        passwordControl.updateValueAndValidity();
-      }
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['user'] && this.user && !this.isEditMode) {
-      this.isEditMode = true;
+    // Populate form only if in edit mode and user is provided
+    if (this.isEditMode && this.user) {
       this.populateForm(this.user);
     }
   }
@@ -113,9 +91,9 @@ export class UserFormComponent implements OnChanges, OnInit {
   private populateForm(user: UserEntity) {
     this.userForm.patchValue({
       firstName: user.firstName,
-      middleName: user.middleName,
+      middleName: user.middleName || '',
       lastName: user.lastName,
-      extensionName: user.extensionName,
+      extensionName: user.extensionName || '',
       phoneNumber: user.phoneNumber,
       email: user.email,
       role: user.role,
@@ -133,12 +111,15 @@ export class UserFormComponent implements OnChanges, OnInit {
   }
 
   onSubmit() {
+    // Mark all fields as touched to show validation errors
+    this.markFormGroupTouched();
+
     if (this.userForm.valid) {
       const formData: UserFormData = {
         firstName: this.userForm.value.firstName,
-        middleName: this.userForm.value.middleName,
+        middleName: this.userForm.value.middleName || null,
         lastName: this.userForm.value.lastName,
-        extensionName: this.userForm.value.extensionName,
+        extensionName: this.userForm.value.extensionName || null,
         phoneNumber: this.userForm.value.phoneNumber,
         email: this.userForm.value.email,
         password: this.userForm.value.password || undefined,
@@ -148,24 +129,43 @@ export class UserFormComponent implements OnChanges, OnInit {
 
       console.log('Form Data to Submit:', formData); // Debug log
 
+      // Emit the form data and let parent handle modal dismissal
+      // this.formSubmit.emit({
+      //   submitted: true,
+      //   formData: formData,
+      // });
       this.modalCtrl.dismiss({
         submitted: true,
-        formData: formData,
+        formData: this.userForm.value,
       });
     } else {
-      this.markFormGroupTouched(); // show validation errors
+      console.log('Form invalid, validation errors:', this.userForm.errors); // Debug log
+      // Do NOT reset the form or dismiss the modal
+      // Validation errors are displayed via template
     }
   }
 
   onCancel() {
+    // Reset form only on cancel
+    this.userForm.reset({
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      extensionName: '',
+      phoneNumber: '',
+      email: '',
+      password: '',
+      role: ROLES.CASHIER,
+      status: true,
+    });
     this.formCancel.emit();
+    this.modalCtrl.dismiss(); // Dismiss modal on cancel
   }
 
   get f() {
     return this.userForm.controls;
   }
 
-  // Fix: Use union type for fieldName parameter
   getErrorMessage(fieldName: FormFieldName): string {
     const control = this.userForm.get(fieldName);
     if (!control?.invalid || !control.touched) return '';
@@ -195,7 +195,6 @@ export class UserFormComponent implements OnChanges, OnInit {
     return 'Invalid input';
   }
 
-  // Fix: Properly typed error messages object
   get errorMessages(): ErrorMessages {
     return {
       firstName: {
@@ -221,51 +220,10 @@ export class UserFormComponent implements OnChanges, OnInit {
     };
   }
 
-  // Alternative: More generic error handling method
-  getFieldErrorMessage(control: AbstractControl | null): string {
-    if (!control?.invalid || !control.touched) return '';
-
-    const errors = control.errors as ValidationErrors | null;
-    if (!errors) return '';
-
-    const fieldName =
-      control instanceof FormGroup
-        ? Object.keys(control.controls)[0]
-        : Object.keys(this.userForm.controls).find(
-            (key) => this.userForm.get(key) === control
-          ) || '';
-
-    const fieldErrors = this.errorMessages[fieldName as FormFieldName];
-
-    if (errors['required']) {
-      return fieldErrors?.required || 'This field is required';
-    }
-
-    if (errors['email']) {
-      return fieldErrors?.email || 'Invalid email format';
-    }
-
-    if (errors['minlength']) {
-      return (
-        fieldErrors?.minlength ||
-        `Minimum length is ${(errors['minlength'] as any).requiredLength}`
-      );
-    }
-
-    if (errors['pattern']) {
-      return fieldErrors?.pattern || 'Invalid format';
-    }
-
-    // Generic error message for unknown validation errors
-    return Object.values(errors)[0]?.toString() || 'Invalid input';
-  }
-
-  // Helper method to check if form is valid
   isFormValid(): boolean {
     return this.userForm.valid && this.userForm.touched;
   }
 
-  // Helper method to get form errors count
   getFormErrorsCount(): number {
     let count = 0;
     Object.keys(this.userForm.controls).forEach((key) => {
@@ -277,12 +235,10 @@ export class UserFormComponent implements OnChanges, OnInit {
     return count;
   }
 
-  // Method to mark all fields as touched (for validation display)
   markFormGroupTouched() {
     Object.keys(this.userForm.controls).forEach((key) => {
       const control = this.userForm.get(key);
       control?.markAsTouched({ onlySelf: true });
-      // Recursively mark nested controls
       if (control instanceof FormGroup) {
         this.markFormGroupTouchedRecursive(control);
       }

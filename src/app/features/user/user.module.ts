@@ -16,6 +16,7 @@ import { UserApiRepository } from './infrastructure/user-api.repository';
 import { CreateUserUseCase } from './application/use-cases/create-user.usecase';
 import { GetUsersUseCase } from './application/use-cases/get-users.usecase';
 import { UpdateUserUseCase } from './application/use-cases/update-user.usecase';
+import { DeleteUserUseCase } from './application/use-cases/delete-user.usecase';
 import { USER_REPOSITORY } from './domain/repositories/user.repository';
 
 // 👇 Add child route here
@@ -47,6 +48,7 @@ const routes: Routes = [
     CreateUserUseCase,
     GetUsersUseCase,
     UpdateUserUseCase,
+    DeleteUserUseCase,
 
     // Repository binding
     { provide: USER_REPOSITORY, useExisting: UserApiRepository }

@@ -7,6 +7,14 @@
 
   <ion-card-content>
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Validation Summary -->
+      <ion-item *ngIf="getFormErrorsCount() > 0 && userForm.touched" color="warning" lines="none" class="error-summary">
+        <ion-icon name="alert-circle-outline" slot="start" color="warning"></ion-icon>
+        <ion-label>
+          <h3>Form has {{ getFormErrorsCount() }} error{{ getFormErrorsCount() !== 1 ? 's' : '' }}</h3>
+          <p>Please fix the errors below to continue.</p>
+        </ion-label>
+      </ion-item>
 
       <!-- Personal Information -->
       <ion-item>
@@ -77,7 +85,7 @@
       </ion-item>
 
       <!-- Password -->
-      <ion-item>
+      <ion-item *ngIf="!isEditMode || (isEditMode && f['password'].value)">
         <ion-label position="stacked">
           {{ isEditMode ? 'New Password (leave empty to keep current)' : 'Password' }}
           <span *ngIf="!isEditMode"><ion-text color="danger">*</ion-text></span>
@@ -87,7 +95,7 @@
           type="password"
           placeholder="Enter password">
         </ion-input>
-        <ion-note *ngIf="f['password'].invalid && f['password'].touched" color="danger" slot="error">
+        <ion-note *ngIf="f['password'].invalid && f['password'].touched && !isEditMode" color="danger" slot="error">
           {{ getErrorMessage('password') }}
         </ion-note>
       </ion-item>
@@ -116,21 +124,12 @@
         </ion-toggle>
       </ion-item>
 
-      <!-- Form Validation Summary (Optional) -->
-      <ion-item *ngIf="getFormErrorsCount() > 0" color="warning">
-        <ion-icon name="alert-circle-outline" slot="start" color="warning"></ion-icon>
-        <ion-label>
-          <h3>Form has {{ getFormErrorsCount() }} error{{ getFormErrorsCount() !== 1 ? 's' : '' }}</h3>
-          <p>Please fix the errors above to continue.</p>
-        </ion-label>
-      </ion-item>
-
       <!-- Action Buttons -->
       <div class="ion-padding">
         <ion-button
           expand="block"
           type="submit"
-          [disabled]="!isFormValid() || isLoading"
+          [disabled]="isLoading"
           color="primary">
           <ion-spinner *ngIf="isLoading" name="crescent" slot="start"></ion-spinner>
           {{ isEditMode ? 'Update User' : 'Create User' }}

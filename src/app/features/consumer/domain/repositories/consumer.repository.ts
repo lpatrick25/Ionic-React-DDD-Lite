@@ -14,6 +14,6 @@ export interface ConsumerRepository {
   updateConsumer(id: number, consumer: Partial<Consumer>): Observable<Consumer>;
   deleteConsumer(id: number): Observable<void>;
   searchConsumers(query: string): Observable<ConsumerResponse>;
-  isEmailTaken(email: string): Observable<boolean>;
-  isPhoneTaken(phoneNumber: string): Observable<boolean>;
+  isEmailTaken(email: string, excludeId?: number, type?: 'user' | 'concessionaire'): Observable<boolean>;
+  isPhoneTaken(phone: string, excludeId?: number, type?: 'user' | 'concessionaire'): Observable<boolean>;
 }

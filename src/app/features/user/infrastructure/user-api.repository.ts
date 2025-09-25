@@ -114,17 +114,31 @@ export class UserApiRepository implements UserRepository {
     return UserEntity.fromApiResponse(apiUser);
   }
 
-  isEmailTaken(email: string): Observable<boolean> {
-    const params = new HttpParams().set('email', email);
+  isEmailTaken(
+    email: string,
+    excludeId?: number,
+    type?: 'user' | 'concessionaire'
+  ): Observable<boolean> {
+    let params = new HttpParams().set('email', email);
+    if (excludeId) params = params.set('exclude_id', excludeId.toString());
+    if (type) params = params.set('type', type);
+
     return this.apiService
-      .get<{ taken: boolean }>(`/check-email`, params)
+      .get<{ taken: boolean }>('/check-email', params)
       .pipe(map((res) => res.taken));
   }
 
-  isPhoneTaken(phoneNumber: string): Observable<boolean> {
-    const params = new HttpParams().set('phone_number', phoneNumber);
+  isPhoneTaken(
+    phoneNumber: string,
+    excludeId?: number,
+    type?: 'user' | 'concessionaire'
+  ): Observable<boolean> {
+    let params = new HttpParams().set('phone_number', phoneNumber);
+    if (excludeId) params = params.set('exclude_id', excludeId.toString());
+    if (type) params = params.set('type', type);
+
     return this.apiService
-      .get<{ taken: boolean }>(`/check-phone`, params)
+      .get<{ taken: boolean }>('/check-phone', params)
       .pipe(map((res) => res.taken));
   }
 }

@@ -279,7 +279,7 @@ export class UserPage implements OnInit {
       message,
       duration: 2000,
       color: 'success',
-      position: 'top',
+      position: 'bottom',
     });
     await toast.present();
   }
@@ -289,7 +289,7 @@ export class UserPage implements OnInit {
       message,
       duration: 5000, // Longer duration for detailed errors
       color: 'danger',
-      position: 'top',
+      position: 'bottom',
       buttons: [
         {
           text: 'Close',

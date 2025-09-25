@@ -1,30 +1,22 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors,
-  AsyncValidatorFn,
-} from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalController } from '@ionic/angular';
 import { ADDRESSES } from '../../../../../core/constants/api.constants';
 import { MeterEntity } from '../../../domain/entities/meter.entity';
 import { MeterFormData } from '../../../application/dto/meter.dto';
-import { ModalController } from '@ionic/angular';
 import { GetConsumersUseCase } from '../../../../consumer/application/use-cases/get-consumers.usecase';
-import { Consumer } from 'src/app/features/consumer/domain/entities/consumer.entity';
+import { Consumer } from '../../../../consumer/domain/entities/consumer.entity';
 import { MeterValidator } from '../../../application/services/meter-validator.service';
+import { AsyncValidatorService } from '../../../../../shared/services/async-validator.service';
+import { AbstractFormComponent } from '../../../../../shared/components/form/abstract-form.component';
 
-// Import types from constants
+// Address type from constants
 export type Address = (typeof ADDRESSES)[keyof typeof ADDRESSES];
 
-// Define error message structure with proper typing
+// Define error message structure
 interface ErrorMessageConfig {
   required?: string;
   minlength?: string;
-  pattern?: string;
   meterNumberTaken?: string;
 }
 
@@ -35,7 +27,7 @@ interface ErrorMessages {
   serviceAddress: ErrorMessageConfig;
 }
 
-// Define valid field names as a union type
+// Valid form field names
 type FormFieldName =
   | 'concessionaireId'
   | 'meterNumber'
@@ -48,69 +40,63 @@ type FormFieldName =
   styleUrls: ['./meter-form.component.scss'],
   standalone: false,
 })
-export class MeterFormComponent implements OnInit {
-  @Input() meter?: MeterEntity | null;
-  @Input() isLoading = false;
-  @Output() formSubmit = new EventEmitter<{
-    submitted: boolean;
-    formData: MeterFormData;
-  }>();
-  @Output() formCancel = new EventEmitter<void>();
-
-  meterForm: FormGroup;
+export class MeterFormComponent
+  extends AbstractFormComponent<MeterFormData, MeterEntity>
+  implements OnInit
+{
   addresses = Object.values(ADDRESSES);
-  isEditMode = false;
-
-  // consumer list
   consumers: Consumer[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private modalCtrl: ModalController,
-    private getConsumersUseCase: GetConsumersUseCase,
-    private meterValidator: MeterValidator
-  ) {
-    this.meterForm = this.createForm();
+  @Input()
+  set meter(meter: MeterEntity | null | undefined) {
+    console.log('Meter input set:', meter);
+    this.entity = meter;
+    if (this.form && meter) {
+      console.log('Calling populateForm from meter setter');
+      this.populateForm(meter);
+    }
   }
 
-  ngOnInit() {
-    // Set edit mode based on whether a meter is provided
-    this.isEditMode = !!this.meter;
+  constructor(
+    fb: FormBuilder,
+    modalCtrl: ModalController,
+    private getConsumersUseCase: GetConsumersUseCase,
+    private meterValidator: MeterValidator,
+    private asyncValidatorService: AsyncValidatorService
+  ) {
+    super(fb, modalCtrl);
+  }
 
-    // Populate form only if in edit mode and meter is provided
-    if (this.isEditMode && this.meter) {
-      this.populateForm(this.meter);
-    }
-
+  override ngOnInit() {
+    console.log('MeterFormComponent ngOnInit', { entity: this.entity });
+    super.ngOnInit();
     this.loadConsumers();
   }
 
-  private createForm(): FormGroup {
+  createForm(): FormGroup {
+    console.log('Creating form with entity ID:', this.entity?.id);
     return this.fb.group({
-      concessionaireId: ['', [Validators.required, Validators.minLength(2)]],
+      concessionaireId: ['', [Validators.required]],
       meterNumber: [
         '',
         [Validators.required, Validators.minLength(2)],
-        [this.meterNumberValidator()],
+        [
+          this.asyncValidatorService.createMeterNumberValidator(
+            (meterNumber, excludeId) =>
+              this.meterValidator.validateMeterNumber(meterNumber, excludeId),
+            this.entity?.id ? Number(this.entity.id) : null
+          ),
+        ],
       ],
-      installationDate: ['', [Validators.required, Validators.minLength(5)]],
-      serviceAddress: ['', [Validators.required, Validators.minLength(5)]],
+      installationDate: ['', [Validators.required]],
+      serviceAddress: ['', [Validators.required]],
       status: [true],
     });
   }
 
-  private meterNumberValidator(): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      if (!control.value) return of(null);
-      return this.meterValidator.validateMeterNumber(control.value).pipe(
-        map((isTaken) => (isTaken ? { meterNumberTaken: true } : null)),
-        catchError(() => of(null))
-      );
-    };
-  }
-
-  private populateForm(meter: MeterEntity) {
-    this.meterForm.patchValue({
+  populateForm(meter: MeterEntity): void {
+    console.log('Populating form with meter:', meter);
+    this.form.patchValue({
       concessionaireId: meter.concessionaireId,
       meterNumber: meter.meterNumber,
       installationDate: this.formatDateForInput(meter.installationDate),
@@ -119,51 +105,59 @@ export class MeterFormComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    // Mark all fields as touched to show validation errors
-    this.markFormGroupTouched();
-
-    if (this.meterForm.valid) {
-      const formData: MeterFormData = {
-        concessionaireId: this.meterForm.value.concessionaireId,
-        meterNumber: this.meterForm.value.meterNumber,
-        installationDate: this.meterForm.value.installationDate,
-        serviceAddress: this.meterForm.value.serviceAddress,
-        status: this.meterForm.value.status,
-      };
-
-      console.log('Form Data to Submit:', formData); // Debug log
-
-      this.modalCtrl.dismiss({
-        submitted: true,
-        formData: this.meterForm.value,
-      });
-    } else {
-      console.log('Form invalid, validation errors:', this.meterForm.errors);
-    }
+  mapFormToData(): MeterFormData {
+    return {
+      concessionaireId: this.form.value.concessionaireId,
+      meterNumber: this.form.value.meterNumber,
+      installationDate: this.form.value.installationDate,
+      serviceAddress: this.form.value.serviceAddress,
+      status: this.form.value.status,
+    };
   }
 
-  onCancel() {
-    // Reset form only on cancel
-    this.meterForm.reset({
+  getFieldLabels(): Record<FormFieldName, string> {
+    return {
+      concessionaireId: 'Concessionaire',
+      meterNumber: 'Meter Number',
+      installationDate: 'Installation Date',
+      serviceAddress: 'Service Address',
+    };
+  }
+
+  getErrorMessages(): Record<FormFieldName, ErrorMessageConfig> {
+    return {
+      concessionaireId: {
+        required: 'Concessionaire is required',
+      },
+      meterNumber: {
+        required: 'Meter number is required',
+        minlength: 'Meter number must be at least 2 characters',
+        meterNumberTaken: 'Meter number is already taken',
+      },
+      installationDate: {
+        required: 'Installation date is required',
+      },
+      serviceAddress: {
+        required: 'Service address is required',
+      },
+    };
+  }
+
+  getDefaultFormValues(): any {
+    return {
       concessionaireId: '',
       meterNumber: '',
       installationDate: '',
       serviceAddress: '',
       status: true,
-    });
-    this.formCancel.emit();
-    this.modalCtrl.dismiss(); // Dismiss modal on cancel
-  }
-
-  get f() {
-    return this.meterForm.controls;
+    };
   }
 
   private loadConsumers() {
     this.getConsumersUseCase.execute(1, 50).subscribe({
       next: (res) => {
         this.consumers = res.rows;
+        console.log('Consumers loaded:', this.consumers);
       },
       error: (err) => console.error('Failed to load consumers:', err),
     });
@@ -172,133 +166,7 @@ export class MeterFormComponent implements OnInit {
   private formatDateForInput(dateString: string): string {
     if (!dateString) return '';
     const parsed = new Date(dateString);
-    if (isNaN(parsed.getTime())) return ''; // fallback if parse fails
+    if (isNaN(parsed.getTime())) return ''; // Fallback if parse fails
     return parsed.toISOString().split('T')[0]; // YYYY-MM-DD
-  }
-
-  getErrorMessage(
-    fieldName: FormFieldName,
-    includeFieldName: boolean = false
-  ): string {
-    const control = this.meterForm.get(fieldName);
-    if (!control?.invalid || !control.touched) return '';
-
-    const errors = control.errors;
-    const fieldErrors = this.errorMessages[fieldName];
-    const fieldLabel = this.getFieldLabel(fieldName);
-
-    if (errors?.['required']) {
-      return includeFieldName
-        ? `${fieldLabel}: ${fieldErrors?.required || 'This field is required'}`
-        : fieldErrors?.required || 'This field is required';
-    }
-    if (errors?.['minlength']) {
-      return includeFieldName
-        ? `${fieldLabel}: ${
-            fieldErrors?.minlength ||
-            `Minimum length is ${errors['minlength'].requiredLength}`
-          }`
-        : fieldErrors?.minlength ||
-            `Minimum length is ${errors['minlength'].requiredLength}`;
-    }
-    if (errors?.['pattern']) {
-      return includeFieldName
-        ? `${fieldLabel}: ${fieldErrors?.pattern || 'Invalid format'}`
-        : fieldErrors?.pattern || 'Invalid format';
-    }
-    if (errors?.['meterNumberTaken']) {
-      return includeFieldName
-        ? `${fieldLabel}: ${
-            fieldErrors?.meterNumberTaken || 'Meter number is already taken'
-          }`
-        : fieldErrors?.meterNumberTaken || 'Meter number is already taken';
-    }
-    if (errors?.['backendError']) {
-      return includeFieldName
-        ? `${fieldLabel}: ${errors['backendError']}`
-        : errors['backendError'];
-    }
-    return includeFieldName ? `${fieldLabel}: Invalid input` : 'Invalid input';
-  }
-
-  getAllErrorMessages(): string[] {
-    const errorMessages: string[] = [];
-    Object.keys(this.meterForm.controls).forEach((key) => {
-      const control = this.meterForm.get(key);
-      if (control?.invalid && control.touched) {
-        const message = this.getErrorMessage(key as FormFieldName);
-        if (message)
-          errorMessages.push(
-            `${this.getFieldLabel(key as FormFieldName)}: ${message}`
-          );
-      }
-    });
-    return errorMessages;
-  }
-
-  private getFieldLabel(fieldName: FormFieldName): string {
-    const labels: Record<FormFieldName, string> = {
-      concessionaireId: 'Concessionaire',
-      meterNumber: 'Meter Number',
-      installationDate: 'Installation Date',
-      serviceAddress: 'Service Address',
-    };
-    return labels[fieldName] || fieldName;
-  }
-
-  get errorMessages(): ErrorMessages {
-    return {
-      concessionaireId: {
-        required: 'Concessionaire is required',
-      },
-      meterNumber: {
-        required: 'Meter number is required',
-        minlength: 'Last name must be at least 2 characters',
-        meterNumberTaken: 'Meter number is already taken',
-      },
-      installationDate: {
-        required: 'Installation date is required',
-        minlength: 'Address must be at least 5 characters',
-      },
-      serviceAddress: {
-        required: 'Service address is required',
-        pattern: 'Phone number must be in format 09xxxxxxxxx',
-      },
-    };
-  }
-
-  isFormValid(): boolean {
-    return this.meterForm.valid && this.meterForm.touched;
-  }
-
-  getFormErrorsCount(): number {
-    let count = 0;
-    Object.keys(this.meterForm.controls).forEach((key) => {
-      const controlErrors = this.meterForm.get(key)?.errors;
-      if (controlErrors) {
-        count += Object.keys(controlErrors).length;
-      }
-    });
-    return count;
-  }
-
-  markFormGroupTouched() {
-    Object.keys(this.meterForm.controls).forEach((key) => {
-      const control = this.meterForm.get(key);
-      control?.markAsTouched({ onlySelf: true });
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouchedRecursive(control);
-      }
-    });
-  }
-
-  private markFormGroupTouchedRecursive(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach((field) => {
-      const control = formGroup.get(field);
-      control?.markAsTouched({ onlySelf: true });
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouchedRecursive(control);
-      }
-    });
   }
 }

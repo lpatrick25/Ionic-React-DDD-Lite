@@ -53,19 +53,31 @@ export class LoginPage implements OnInit {
         },
         error: (error) => {
           console.error('Login error 456:', error);
-          const errorMessage = error.message || 'Login failed';
-          const validationErrors = error.errors as
+
+          // Default message
+          let errorMessage = 'Login failed';
+
+          // Extract backend error message
+          if (error.error && error.error.error) {
+            errorMessage = error.error.error; // "Invalid email or password"
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+
+          // Extract validation errors if available
+          const validationErrors = error.error?.errors as
             | { [key: string]: string[] }
             | undefined;
-          let detailedMessage = errorMessage;
+
           if (validationErrors && Object.keys(validationErrors).length > 0) {
-            detailedMessage +=
+            errorMessage +=
               ': ' +
               Object.entries(validationErrors)
                 .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
                 .join('; ');
           }
-          this.showErrorMessage(detailedMessage);
+
+          this.showErrorMessage(errorMessage);
         },
       });
   }
@@ -80,7 +92,7 @@ export class LoginPage implements OnInit {
       message,
       duration: 2000,
       color: 'success',
-      position: 'top',
+      position: 'bottom',
     });
     await toast.present();
   }
@@ -90,7 +102,7 @@ export class LoginPage implements OnInit {
       message,
       duration: 5000,
       color: 'danger',
-      position: 'top',
+      position: 'bottom',
       buttons: [{ text: 'Close', role: 'cancel' }],
     });
     await toast.present();

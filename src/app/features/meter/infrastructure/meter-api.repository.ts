@@ -40,7 +40,9 @@ export class MeterApiRepository implements MeterRepository {
     return this.apiService
       .get<MeterApiResponse>(`${this.endpoint}/${id}`)
       .pipe(
-        map((apiMeter: MeterApiResponse) => MeterEntity.fromApiResponse(apiMeter))
+        map((apiMeter: MeterApiResponse) =>
+          MeterEntity.fromApiResponse(apiMeter)
+        )
       );
   }
 
@@ -58,7 +60,9 @@ export class MeterApiRepository implements MeterRepository {
     return this.apiService
       .post<MeterApiResponse>(this.endpoint, createDto)
       .pipe(
-        map((apiMeter: MeterApiResponse) => MeterEntity.fromApiResponse(apiMeter))
+        map((apiMeter: MeterApiResponse) =>
+          MeterEntity.fromApiResponse(apiMeter)
+        )
       );
   }
 
@@ -82,7 +86,9 @@ export class MeterApiRepository implements MeterRepository {
     return this.apiService
       .put<MeterApiResponse>(`${this.endpoint}/${id}`, updateDto)
       .pipe(
-        map((apiMeter: MeterApiResponse) => MeterEntity.fromApiResponse(apiMeter))
+        map((apiMeter: MeterApiResponse) =>
+          MeterEntity.fromApiResponse(apiMeter)
+        )
       );
   }
 
@@ -108,8 +114,15 @@ export class MeterApiRepository implements MeterRepository {
     return MeterEntity.fromApiResponse(apiMeter);
   }
 
-  isMeterNumberTaken(meterNumber: string): Observable<boolean> {
-    const params = new HttpParams().set('meter_number', meterNumber);
+  isMeterNumberTaken(
+    meterNumber: string,
+    excludeId?: number
+  ): Observable<boolean> {
+    let params = new HttpParams().set('meter_number', meterNumber);
+    if (excludeId) {
+      params = params.set('exclude_id', excludeId.toString());
+    }
+
     return this.apiService
       .get<{ taken: boolean }>(`/check-meter-number`, params)
       .pipe(map((res) => res.taken));

@@ -1,9 +1,9 @@
 <ion-card>
   <ion-card-content>
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
       <!-- Validation Summary (Always Visible) -->
       <ion-card
-        *ngIf="getFormErrorsCount() > 0 && userForm.touched"
+        *ngIf="getFormErrorsCount() > 0 && form.touched"
         class="alert alert-danger summary-card"
         role="alert"
       >

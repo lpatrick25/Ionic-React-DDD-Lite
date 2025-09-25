@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { Observable, throwError, forkJoin } from 'rxjs';
+import { Observable, throwError, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import {
   USER_REPOSITORY,
@@ -15,15 +15,23 @@ export class UserValidator {
     @Inject(USER_REPOSITORY) private userRepository: UserRepository
   ) {}
 
-  validateEmail(email: string): Observable<boolean> {
-    return this.userRepository.isEmailTaken(email);
+  validateEmail(
+    email: string,
+    excludeId?: number,
+    type: 'user' | 'concessionaire' = 'user'
+  ): Observable<boolean> {
+    return this.userRepository.isEmailTaken(email, excludeId, type);
   }
 
-  validatePhone(phoneNumber: string): Observable<boolean> {
-    return this.userRepository.isPhoneTaken(phoneNumber);
+  validatePhone(
+    phoneNumber: string,
+    excludeId?: number,
+    type: 'user' | 'concessionaire' = 'user'
+  ): Observable<boolean> {
+    return this.userRepository.isPhoneTaken(phoneNumber, excludeId, type);
   }
 
-  validate(formData: UserFormData): Observable<void> {
+  validate(formData: UserFormData, excludeId?: number): Observable<void> {
     // Basic required fields
     if (!formData.firstName || !formData.lastName || !formData.role) {
       return throwError(
@@ -35,21 +43,47 @@ export class UserValidator {
       return throwError(() => new Error('Phone number and email are required'));
     }
 
-    // Uniqueness checks (email and phone concurrently)
+    // Format validations
+    if (!this.isValidEmail(formData.email)) {
+      return throwError(() => new Error('Invalid email format'));
+    }
+
+    if (!this.isValidPhoneNumber(formData.phoneNumber)) {
+      return throwError(() => new Error('Invalid phone number format'));
+    }
+
+    // Uniqueness checks (run in parallel)
     return forkJoin({
-      emailTaken: this.userRepository.isEmailTaken(formData.email),
-      phoneTaken: this.userRepository.isPhoneTaken(formData.phoneNumber),
+      emailTaken: this.userRepository.isEmailTaken(
+        formData.email,
+        excludeId,
+        'user'
+      ),
+      phoneTaken: this.userRepository.isPhoneTaken(
+        formData.phoneNumber,
+        excludeId,
+        'user'
+      ),
     }).pipe(
       switchMap(({ emailTaken, phoneTaken }) => {
-        if (emailTaken)
+        if (emailTaken) {
           return throwError(() => new Error('Email is already taken'));
-        if (phoneTaken)
+        }
+        if (phoneTaken) {
           return throwError(() => new Error('Phone number is already taken'));
-        return new Observable<void>((observer) => {
-          observer.next();
-          observer.complete();
-        });
+        }
+        return of(void 0);
       })
     );
+  }
+
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  private isValidPhoneNumber(phone: string): boolean {
+    const phoneRegex = /^09\d{9}$/;
+    return phoneRegex.test(phone.replace(/\s+/g, ''));
   }
 }

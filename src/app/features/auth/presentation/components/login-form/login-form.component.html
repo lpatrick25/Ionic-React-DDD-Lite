@@ -1,35 +1,31 @@
 <ion-card>
   <ion-card-content>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
       <!-- Validation Summary (Always Visible) -->
-      <!-- <ion-item
-        *ngIf="getFormErrorsCount() > 0 && loginForm.touched"
+      <ion-card
+        *ngIf="getFormErrorsCount() > 0 && form.touched"
         class="alert alert-danger summary-card"
-        lines="none"
+        role="alert"
       >
-        <ion-icon
-          name="alert-circle-outline"
-          slot="start"
-          color="warning"
-        ></ion-icon>
-        <ion-label>
-          Form has {{ getFormErrorsCount() }} error{{
-            getFormErrorsCount() !== 1 ? "s" : ""
-          }}
-        </ion-label>
-      </ion-item> -->
-
-      <!-- Validation Alert (Detailed messages) -->
-      <div
-        *ngIf="getFormErrorMessages().length > 0 && loginForm.touched"
-        class="alert alert-danger"
-      >
-        <ul>
-          <li *ngFor="let error of getFormErrorMessages()">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="alert-circle-outline" color="warning"></ion-icon>
+            Form Errors
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ul class="error-list">
+            <li *ngFor="let error of getAllErrorMessages()">
+              <ion-icon
+                name="warning-outline"
+                slot="start"
+                color="danger"
+              ></ion-icon>
+              {{ error }}
+            </li>
+          </ul>
+        </ion-card-content>
+      </ion-card>
 
       <!-- Email -->
       <ion-item [class.invalid]="f['email'].invalid && f['email'].touched">
@@ -46,6 +42,7 @@
           class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("email") }}
         </ion-note>
       </ion-item>
@@ -67,12 +64,13 @@
           class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("password") }}
         </ion-note>
       </ion-item>
 
       <!-- Action Buttons -->
-      <div class="ion-padding">
+      <div class="ion-padding action-buttons">
         <ion-button
           expand="block"
           type="submit"

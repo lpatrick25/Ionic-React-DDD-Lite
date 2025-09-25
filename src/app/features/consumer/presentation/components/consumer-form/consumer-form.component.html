@@ -1,9 +1,9 @@
 <ion-card>
   <ion-card-content>
-    <form [formGroup]="consumerForm" (ngSubmit)="onSubmit()" novalidate>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
       <!-- Validation Summary (Always Visible) -->
       <ion-card
-        *ngIf="getFormErrorsCount() > 0 && consumerForm.touched"
+        *ngIf="getFormErrorsCount() > 0 && form.touched"
         class="alert alert-danger summary-card"
         role="alert"
       >
@@ -171,7 +171,7 @@
         <ion-button
           expand="block"
           type="submit"
-          [disabled]="isLoading || consumerForm.invalid"
+          [disabled]="isLoading"
           color="primary"
         >
           <ion-spinner

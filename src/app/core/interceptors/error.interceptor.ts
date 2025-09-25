@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HTTP_STATUS } from '../constants/api.constants';
@@ -11,14 +16,17 @@ import { ToastConfig, ToastPosition, ToastColor } from '../types/toast.types';
 export class ErrorInterceptor implements HttpInterceptor {
   private readonly DEFAULT_DURATION = 3000;
   private readonly DEFAULT_COLOR: ToastColor = 'danger';
-  private readonly DEFAULT_POSITION: ToastPosition = 'top';
+  private readonly DEFAULT_POSITION: ToastPosition = 'bottom';
 
   constructor(private toastController: ToastController) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        this.handleError(error);
+        // Skip toast if it's a validation error (400 with "errors" object)
+        if (!this.isValidationError(error)) {
+          this.handleError(error);
+        }
         return throwError(() => error);
       })
     );
@@ -35,7 +43,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       message: this.getErrorMessage(error),
       duration: this.DEFAULT_DURATION,
       position: this.DEFAULT_POSITION,
-      color: this.DEFAULT_COLOR
+      color: this.DEFAULT_COLOR,
     };
 
     // Customize based on error type
@@ -47,7 +55,8 @@ export class ErrorInterceptor implements HttpInterceptor {
         break;
       case HTTP_STATUS.FORBIDDEN:
         config.color = 'warning';
-        config.message = 'Access denied. You don\'t have permission to perform this action.';
+        config.message =
+          "Access denied. You don't have permission to perform this action.";
         break;
       case HTTP_STATUS.NOT_FOUND:
         config.color = 'warning';

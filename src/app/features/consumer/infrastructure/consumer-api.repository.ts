@@ -51,7 +51,9 @@ export class ConsumerApiRepository implements ConsumerRepository {
       );
   }
 
-  createConsumer(consumerData: Partial<ConsumerEntity>): Observable<ConsumerEntity> {
+  createConsumer(
+    consumerData: Partial<ConsumerEntity>
+  ): Observable<ConsumerEntity> {
     const createDto: CreateConsumerDto = {
       first_name: consumerData.firstName!,
       middle_name: consumerData.middleName,
@@ -111,17 +113,31 @@ export class ConsumerApiRepository implements ConsumerRepository {
       );
   }
 
-  isEmailTaken(email: string): Observable<boolean> {
-    const params = new HttpParams().set('email', email);
+  isEmailTaken(
+    email: string,
+    excludeId?: number,
+    type?: 'user' | 'concessionaire'
+  ): Observable<boolean> {
+    let params = new HttpParams().set('email', email);
+    if (excludeId) params = params.set('exclude_id', excludeId.toString());
+    if (type) params = params.set('type', type);
+
     return this.apiService
-      .get<{ taken: boolean }>(`/check-email`, params)
+      .get<{ taken: boolean }>('/check-email', params)
       .pipe(map((res) => res.taken));
   }
 
-  isPhoneTaken(phoneNumber: string): Observable<boolean> {
-    const params = new HttpParams().set('phone_number', phoneNumber);
+  isPhoneTaken(
+    phone: string,
+    excludeId?: number,
+    type?: 'user' | 'concessionaire'
+  ): Observable<boolean> {
+    let params = new HttpParams().set('phone_number', phone);
+    if (excludeId) params = params.set('exclude_id', excludeId.toString());
+    if (type) params = params.set('type', type);
+
     return this.apiService
-      .get<{ taken: boolean }>(`/check-phone`, params)
+      .get<{ taken: boolean }>('/check-phone', params)
       .pipe(map((res) => res.taken));
   }
 }

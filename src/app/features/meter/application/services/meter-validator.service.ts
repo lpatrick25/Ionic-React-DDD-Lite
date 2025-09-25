@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { Observable, throwError, forkJoin } from 'rxjs';
+import { Observable, throwError, forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import {
   METER_REPOSITORY,
@@ -15,11 +15,14 @@ export class MeterValidator {
     @Inject(METER_REPOSITORY) private meterRepository: MeterRepository
   ) {}
 
-  validateMeterNumber(email: string): Observable<boolean> {
-    return this.meterRepository.isMeterNumberTaken(email);
+  validateMeterNumber(
+    meterNumber: string,
+    excludeId?: number
+  ): Observable<boolean> {
+    return this.meterRepository.isMeterNumberTaken(meterNumber, excludeId);
   }
 
-  validate(formData: MeterFormData): Observable<void> {
+  validate(formData: MeterFormData, excludeId?: number): Observable<void> {
     // Basic required fields
     if (
       !formData.concessionaireId ||
@@ -38,16 +41,14 @@ export class MeterValidator {
     // Uniqueness checks (email and phone concurrently)
     return forkJoin({
       isMeterNumberTaken: this.meterRepository.isMeterNumberTaken(
-        formData.meterNumber
+        formData.meterNumber,
+        excludeId
       ),
     }).pipe(
       switchMap(({ isMeterNumberTaken }) => {
         if (isMeterNumberTaken)
           return throwError(() => new Error('Meter number is already taken'));
-        return new Observable<void>((observer) => {
-          observer.next();
-          observer.complete();
-        });
+        return of(void 0);
       })
     );
   }

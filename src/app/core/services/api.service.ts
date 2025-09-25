@@ -76,23 +76,18 @@ export class ApiService {
   }
 
   private handleError(error: any) {
-    // console.error('API Error:', JSON.stringify(error, null, 2));
     console.error('API Error:', error);
-
-    if (error.status === HTTP_STATUS.UNAUTHORIZED) {
-      // Optionally handle unauthorized access
-    }
 
     let errorMessage = 'An unknown error occurred';
 
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = error.error.message;
-    } else if (error.error && error.error.message) {
-      // API provided a message
-      errorMessage = error.error.message;
+    } else if (error.error && (error.error.message || error.error.error)) {
+      // API provided a message OR error
+      errorMessage = error.error.message || error.error.error;
     } else if (error.status === 0) {
-      // Network error (common on Android)
+      // Network error
       errorMessage = 'Cannot connect to server. Check your network or API URL.';
     } else {
       // Fallback

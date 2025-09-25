@@ -1,9 +1,9 @@
 <ion-card>
   <ion-card-content>
-    <form [formGroup]="meterForm" (ngSubmit)="onSubmit()" novalidate>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
       <!-- Validation Summary (Always Visible, Not Dismissible) -->
       <ion-card
-        *ngIf="getFormErrorsCount() > 0 && meterForm.touched"
+        *ngIf="getFormErrorsCount() > 0 && form.touched"
         class="alert alert-danger summary-card"
         role="alert"
       >
@@ -53,7 +53,8 @@
           class="inline-error"
           slot="error"
         >
-          Concessionaire is required
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("concessionaireId") }}
         </ion-note>
       </ion-item>
 
@@ -61,9 +62,9 @@
       <ion-item
         [class.invalid]="f['meterNumber'].invalid && f['meterNumber'].touched"
       >
-        <ion-label position="stacked"
-          >Meter Number <ion-text color="danger">*</ion-text></ion-label
-        >
+        <ion-label position="stacked">
+          Meter Number <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="meterNumber"
           type="text"
@@ -74,6 +75,7 @@
           class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("meterNumber") }}
         </ion-note>
       </ion-item>
@@ -84,15 +86,16 @@
           f['installationDate'].invalid && f['installationDate'].touched
         "
       >
-        <ion-label position="stacked"
-          >Installation Date <ion-text color="danger">*</ion-text></ion-label
-        >
+        <ion-label position="stacked">
+          Installation Date <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input formControlName="installationDate" type="date"></ion-input>
         <ion-note
           *ngIf="f['installationDate'].invalid && f['installationDate'].touched"
           class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("installationDate") }}
         </ion-note>
       </ion-item>
@@ -103,9 +106,9 @@
           f['serviceAddress'].invalid && f['serviceAddress'].touched
         "
       >
-        <ion-label position="stacked"
-          >Service Address <ion-text color="danger">*</ion-text></ion-label
-        >
+        <ion-label position="stacked">
+          Service Address <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-select formControlName="serviceAddress" interface="action-sheet">
           <ion-select-option
             *ngFor="let address of addresses"
@@ -119,7 +122,8 @@
           class="inline-error"
           slot="error"
         >
-          Service Address is required
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("serviceAddress") }}
         </ion-note>
       </ion-item>
 

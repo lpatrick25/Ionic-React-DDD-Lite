@@ -12,4 +12,6 @@ export interface UserRepository {
   updateUser(id: number, user: Partial<User> & { password?: string }): Observable<User>;
   deleteUser(id: number): Observable<void>;
   searchUsers(query: string): Observable<UserResponse>;
+  isEmailTaken(email: string): Observable<boolean>;
+  isPhoneTaken(phoneNumber: string): Observable<boolean>;
 }

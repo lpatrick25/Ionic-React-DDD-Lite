@@ -5,13 +5,17 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  AsyncValidatorFn,
 } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { ADDRESSES } from '../../../../../core/constants/api.constants';
 import { MeterEntity } from '../../../domain/entities/meter.entity';
 import { MeterFormData } from '../../../application/dto/meter.dto';
 import { ModalController } from '@ionic/angular';
 import { GetConsumersUseCase } from '../../../../consumer/application/use-cases/get-consumers.usecase';
 import { Consumer } from 'src/app/features/consumer/domain/entities/consumer.entity';
+import { MeterValidator } from '../../../application/services/meter-validator.service';
 
 // Import types from constants
 export type Address = (typeof ADDRESSES)[keyof typeof ADDRESSES];
@@ -21,6 +25,7 @@ interface ErrorMessageConfig {
   required?: string;
   minlength?: string;
   pattern?: string;
+  meterNumberTaken?: string;
 }
 
 interface ErrorMessages {
@@ -59,7 +64,12 @@ export class MeterFormComponent implements OnInit {
   // consumer list
   consumers: Consumer[] = [];
 
-  constructor(private fb: FormBuilder, private modalCtrl: ModalController, private getConsumersUseCase: GetConsumersUseCase) {
+  constructor(
+    private fb: FormBuilder,
+    private modalCtrl: ModalController,
+    private getConsumersUseCase: GetConsumersUseCase,
+    private meterValidator: MeterValidator
+  ) {
     this.meterForm = this.createForm();
   }
 
@@ -78,11 +88,25 @@ export class MeterFormComponent implements OnInit {
   private createForm(): FormGroup {
     return this.fb.group({
       concessionaireId: ['', [Validators.required, Validators.minLength(2)]],
-      meterNumber: ['', [Validators.required, Validators.minLength(2)]],
+      meterNumber: [
+        '',
+        [Validators.required, Validators.minLength(2)],
+        [this.meterNumberValidator()],
+      ],
       installationDate: ['', [Validators.required, Validators.minLength(5)]],
       serviceAddress: ['', [Validators.required, Validators.minLength(5)]],
       status: [true],
     });
+  }
+
+  private meterNumberValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) return of(null);
+      return this.meterValidator.validateMeterNumber(control.value).pipe(
+        map((isTaken) => (isTaken ? { meterNumberTaken: true } : null)),
+        catchError(() => of(null))
+      );
+    };
   }
 
   private populateForm(meter: MeterEntity) {
@@ -152,29 +176,74 @@ export class MeterFormComponent implements OnInit {
     return parsed.toISOString().split('T')[0]; // YYYY-MM-DD
   }
 
-  getErrorMessage(fieldName: FormFieldName): string {
+  getErrorMessage(
+    fieldName: FormFieldName,
+    includeFieldName: boolean = false
+  ): string {
     const control = this.meterForm.get(fieldName);
     if (!control?.invalid || !control.touched) return '';
 
     const errors = control.errors;
     const fieldErrors = this.errorMessages[fieldName];
+    const fieldLabel = this.getFieldLabel(fieldName);
 
     if (errors?.['required']) {
-      return fieldErrors?.required || 'This field is required';
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.required || 'This field is required'}`
+        : fieldErrors?.required || 'This field is required';
     }
-
     if (errors?.['minlength']) {
-      return (
-        fieldErrors?.minlength ||
-        `Minimum length is ${errors['minlength'].requiredLength}`
-      );
+      return includeFieldName
+        ? `${fieldLabel}: ${
+            fieldErrors?.minlength ||
+            `Minimum length is ${errors['minlength'].requiredLength}`
+          }`
+        : fieldErrors?.minlength ||
+            `Minimum length is ${errors['minlength'].requiredLength}`;
     }
-
     if (errors?.['pattern']) {
-      return fieldErrors?.pattern || 'Invalid format';
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.pattern || 'Invalid format'}`
+        : fieldErrors?.pattern || 'Invalid format';
     }
+    if (errors?.['meterNumberTaken']) {
+      return includeFieldName
+        ? `${fieldLabel}: ${
+            fieldErrors?.meterNumberTaken || 'Meter number is already taken'
+          }`
+        : fieldErrors?.meterNumberTaken || 'Meter number is already taken';
+    }
+    if (errors?.['backendError']) {
+      return includeFieldName
+        ? `${fieldLabel}: ${errors['backendError']}`
+        : errors['backendError'];
+    }
+    return includeFieldName ? `${fieldLabel}: Invalid input` : 'Invalid input';
+  }
 
-    return 'Invalid input';
+  getAllErrorMessages(): string[] {
+    const errorMessages: string[] = [];
+    Object.keys(this.meterForm.controls).forEach((key) => {
+      const control = this.meterForm.get(key);
+      if (control?.invalid && control.touched) {
+        const message = this.getErrorMessage(key as FormFieldName);
+        if (message)
+          errorMessages.push(
+            `${this.getFieldLabel(key as FormFieldName)}: ${message}`
+          );
+      }
+    });
+    return errorMessages;
+  }
+
+  private getFieldLabel(fieldName: FormFieldName): string {
+    const labels: Record<FormFieldName, string> = {
+      concessionaireId: 'Concessionaire',
+      meterNumber: 'Meter Number',
+      installationDate: 'Installation Date',
+      serviceAddress: 'Service Address',
+    };
+    return labels[fieldName] || fieldName;
   }
 
   get errorMessages(): ErrorMessages {
@@ -185,6 +254,7 @@ export class MeterFormComponent implements OnInit {
       meterNumber: {
         required: 'Meter number is required',
         minlength: 'Last name must be at least 2 characters',
+        meterNumberTaken: 'Meter number is already taken',
       },
       installationDate: {
         required: 'Installation date is required',

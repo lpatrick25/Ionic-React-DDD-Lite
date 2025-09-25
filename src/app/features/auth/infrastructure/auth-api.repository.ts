@@ -4,7 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import { API_ENDPOINTS } from '../../../core/constants/api.constants';
 import { AuthRepository } from '../domain/repositories/auth.repository';
-import { LoginDto } from '../application/dto/auth.dto';
+import { AuthDto } from '../application/dto/auth.dto';
 import { AuthEntity, AuthApiResponse } from '../domain/entities/auth.entity';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class AuthApiRepository implements AuthRepository {
 
   constructor(private apiService: ApiService) {}
 
-  login(credentials: LoginDto): Observable<AuthEntity> {
+  login(credentials: AuthDto): Observable<AuthEntity> {
     return this.apiService
       .post<AuthApiResponse>(this.endpoint, credentials)
       .pipe(
@@ -24,10 +24,10 @@ export class AuthApiRepository implements AuthRepository {
           return AuthEntity.fromApiResponse(apiResponse);
         }),
         catchError((error) => {
-          console.error('Login error:', error);
+          // console.error('Login error:', JSON.stringify(error, null, 2));
           return throwError(() => ({
-            message: error.error?.message || 'Login failed',
-            errors: error.error?.errors || {},
+            message: error.message || 'Login failed',
+            errors: error.errors || {},
           }));
         })
       );

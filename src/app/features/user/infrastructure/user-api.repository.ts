@@ -113,4 +113,18 @@ export class UserApiRepository implements UserRepository {
   private mapApiToEntity(apiUser: UserApiResponse): UserEntity {
     return UserEntity.fromApiResponse(apiUser);
   }
+
+  isEmailTaken(email: string): Observable<boolean> {
+    const params = new HttpParams().set('email', email);
+    return this.apiService
+      .get<{ taken: boolean }>(`/check-email`, params)
+      .pipe(map((res) => res.taken));
+  }
+
+  isPhoneTaken(phoneNumber: string): Observable<boolean> {
+    const params = new HttpParams().set('phone_number', phoneNumber);
+    return this.apiService
+      .get<{ taken: boolean }>(`/check-phone`, params)
+      .pipe(map((res) => res.taken));
+  }
 }

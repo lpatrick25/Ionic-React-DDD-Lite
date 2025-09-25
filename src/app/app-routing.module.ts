@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/ui/main-layout/main-layout.component';
+import { AuthGuard } from './core/guards/auth.guard';
+import { GuestGuard } from './core/guards/guest.guard';
 
 const routes: Routes = [
   // Default route → redirect to login
@@ -9,6 +11,7 @@ const routes: Routes = [
   // Public route (no menu/layout)
   {
     path: 'login',
+    canActivate: [GuestGuard],
     loadChildren: () =>
       import('./features/auth/auth.module').then((m) => m.AuthModule),
   },
@@ -17,6 +20,7 @@ const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'users',

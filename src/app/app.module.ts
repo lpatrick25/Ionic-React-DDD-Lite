@@ -14,6 +14,9 @@ import { CoreModule } from './core/core.module';
 import { UserModule } from './features/user/user.module';
 import { ConsumerModule } from './features/consumer/consumer.module';
 import { MeterModule } from './features/meter/meter.module';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+// Angular Material Modules
 
 @NgModule({
   declarations: [
@@ -30,7 +33,8 @@ import { MeterModule } from './features/meter/meter.module';
     MeterModule,
   ],
   providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent],
 })

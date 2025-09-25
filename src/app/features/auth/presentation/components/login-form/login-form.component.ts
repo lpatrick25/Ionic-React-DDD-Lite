@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { LoginDto } from '../../../application/dto/auth.dto';
+import { AuthDto } from '../../../application/dto/auth.dto';
 
 // Error message type for better typing
 interface ErrorMessageConfig {
@@ -25,7 +25,10 @@ type FormFieldName = 'email' | 'password';
 })
 export class LoginFormComponent implements OnInit {
   @Input() isLoading = false;
-  @Output() formSubmit = new EventEmitter<{ submitted: boolean; formData: LoginDto }>();
+  @Output() formSubmit = new EventEmitter<{
+    submitted: boolean;
+    formData: AuthDto;
+  }>();
   @Output() formCancel = new EventEmitter<void>();
 
   loginForm: FormGroup;
@@ -49,7 +52,7 @@ export class LoginFormComponent implements OnInit {
     this.markFormGroupTouched();
 
     if (this.loginForm.valid) {
-      const formData: LoginDto = this.loginForm.value;
+      const formData: AuthDto = this.loginForm.value;
       console.log('Login Form Data:', formData);
 
       this.formSubmit.emit({ submitted: true, formData });
@@ -93,25 +96,38 @@ export class LoginFormComponent implements OnInit {
     const errors = control.errors;
     const fieldErrors = this.errorMessages[fieldName];
 
-    if (errors?.['required']) return fieldErrors.required || 'This field is required';
+    if (errors?.['required'])
+      return fieldErrors.required || 'This field is required';
     if (errors?.['email']) return fieldErrors.email || 'Invalid email format';
     if (errors?.['minlength'])
-      return fieldErrors.minlength || `Minimum length is ${errors['minlength'].requiredLength}`;
+      return (
+        fieldErrors.minlength ||
+        `Minimum length is ${errors['minlength'].requiredLength}`
+      );
 
     return 'Invalid input';
+  }
+
+  /** Return all current error messages as an array of strings */
+  getFormErrorMessages(): string[] {
+    return Object.keys(this.loginForm.controls)
+      .map((field) => this.getErrorMessage(field as FormFieldName))
+      .filter((msg) => msg.length > 0);
   }
 
   /** Count total validation errors */
   getFormErrorsCount(): number {
     return Object.values(this.loginForm.controls).reduce((count, control) => {
-      return control.errors ? count + Object.keys(control.errors).length : count;
+      return control.errors
+        ? count + Object.keys(control.errors).length
+        : count;
     }, 0);
   }
 
   /** Mark all controls as touched (to show errors) */
   private markFormGroupTouched() {
     Object.values(this.loginForm.controls).forEach((control) =>
-      control.markAsTouched({ onlySelf: true }),
+      control.markAsTouched({ onlySelf: true })
     );
   }
 }

@@ -1,44 +1,50 @@
 <ion-card>
   <ion-card-content>
     <form [formGroup]="consumerForm" (ngSubmit)="onSubmit()" novalidate>
-      <!-- Validation Summary -->
-      <ion-item
+      <!-- Validation Summary (Always Visible) -->
+      <ion-card
         *ngIf="getFormErrorsCount() > 0 && consumerForm.touched"
-        color="warning"
-        lines="none"
-        class="error-summary"
+        class="alert alert-danger summary-card"
+        role="alert"
       >
-        <ion-icon
-          name="alert-circle-outline"
-          slot="start"
-          color="warning"
-        ></ion-icon>
-        <ion-label>
-          <h3>
-            Form has {{ getFormErrorsCount() }} error{{
-              getFormErrorsCount() !== 1 ? "s" : ""
-            }}
-          </h3>
-          <p>Please fix the errors below to continue.</p>
-        </ion-label>
-      </ion-item>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="alert-circle-outline" color="warning"></ion-icon>
+            Form Errors
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ul class="error-list">
+            <li *ngFor="let error of getAllErrorMessages()">
+              <ion-icon
+                name="warning-outline"
+                slot="start"
+                color="danger"
+              ></ion-icon>
+              {{ error }}
+            </li>
+          </ul>
+        </ion-card-content>
+      </ion-card>
 
       <!-- Personal Information -->
-      <ion-item>
-        <ion-label position="stacked"
-          >First Name <ion-text color="danger">*</ion-text></ion-label
-        >
+      <ion-item
+        [class.invalid]="f['firstName'].invalid && f['firstName'].touched"
+      >
+        <ion-label position="stacked">
+          First Name <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="firstName"
           type="text"
           placeholder="Enter first name"
-        >
-        </ion-input>
+        ></ion-input>
         <ion-note
           *ngIf="f['firstName'].invalid && f['firstName'].touched"
-          color="danger"
+          class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("firstName") }}
         </ion-note>
       </ion-item>
@@ -49,25 +55,26 @@
           formControlName="middleName"
           type="text"
           placeholder="Enter middle name (optional)"
-        >
-        </ion-input>
+        ></ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked"
-          >Last Name <ion-text color="danger">*</ion-text></ion-label
-        >
+      <ion-item
+        [class.invalid]="f['lastName'].invalid && f['lastName'].touched"
+      >
+        <ion-label position="stacked">
+          Last Name <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="lastName"
           type="text"
           placeholder="Enter last name"
-        >
-        </ion-input>
+        ></ion-input>
         <ion-note
           *ngIf="f['lastName'].invalid && f['lastName'].touched"
-          color="danger"
+          class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("lastName") }}
         </ion-note>
       </ion-item>
@@ -78,15 +85,14 @@
           formControlName="extensionName"
           type="text"
           placeholder="Jr., Sr., etc. (optional)"
-        >
-        </ion-input>
+        ></ion-input>
       </ion-item>
 
-      <!-- Address Selection -->
-      <ion-item>
-        <ion-label position="stacked"
-          >Address <ion-text color="danger">*</ion-text></ion-label
-        >
+      <!-- Address -->
+      <ion-item [class.invalid]="f['address'].invalid && f['address'].touched">
+        <ion-label position="stacked">
+          Address <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-select formControlName="address" interface="action-sheet">
           <ion-select-option
             *ngFor="let address of addresses"
@@ -97,48 +103,51 @@
         </ion-select>
         <ion-note
           *ngIf="f['address'].invalid && f['address'].touched"
-          color="danger"
+          class="inline-error"
           slot="error"
         >
-          Address is required
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("address") }}
         </ion-note>
       </ion-item>
 
-      <!-- Contact Information -->
-      <ion-item>
-        <ion-label position="stacked"
-          >Phone Number <ion-text color="danger">*</ion-text></ion-label
-        >
+      <!-- Contact -->
+      <ion-item
+        [class.invalid]="f['phoneNumber'].invalid && f['phoneNumber'].touched"
+      >
+        <ion-label position="stacked">
+          Phone Number <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="phoneNumber"
           type="tel"
           placeholder="09xxxxxxxxx"
-        >
-        </ion-input>
+        ></ion-input>
         <ion-note
           *ngIf="f['phoneNumber'].invalid && f['phoneNumber'].touched"
-          color="danger"
+          class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("phoneNumber") }}
         </ion-note>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked"
-          >Email <ion-text color="danger">*</ion-text></ion-label
-        >
+      <ion-item [class.invalid]="f['email'].invalid && f['email'].touched">
+        <ion-label position="stacked">
+          Email <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="email"
           type="email"
           placeholder="consumer@example.com"
-        >
-        </ion-input>
+        ></ion-input>
         <ion-note
           *ngIf="f['email'].invalid && f['email'].touched"
-          color="danger"
+          class="inline-error"
           slot="error"
         >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("email") }}
         </ion-note>
       </ion-item>
@@ -158,11 +167,11 @@
       </ion-item>
 
       <!-- Action Buttons -->
-      <div class="ion-padding">
+      <div class="ion-padding action-buttons">
         <ion-button
           expand="block"
           type="submit"
-          [disabled]="isLoading"
+          [disabled]="isLoading || consumerForm.invalid"
           color="primary"
         >
           <ion-spinner
@@ -172,7 +181,6 @@
           ></ion-spinner>
           {{ isEditMode ? "Update Consumer" : "Create Consumer" }}
         </ion-button>
-
         <ion-button
           expand="block"
           fill="clear"

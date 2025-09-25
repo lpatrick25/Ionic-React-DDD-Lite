@@ -70,6 +70,22 @@ export class AuthService {
     }
   }
 
+  async setAuthData(
+    token: string,
+    user: { id: number; name: string; email: string; role: string }
+  ): Promise<void> {
+    if (!this._storage) return;
+
+    try {
+      await this._storage.set('auth_token', token);
+      await this._storage.set('user', user);
+      console.log('User Role:' + user.role);
+      this.currentUserSubject.next(user);
+    } catch (error) {
+      console.error('Error storing auth data:', error);
+    }
+  }
+
   login(email: string, password: string): Observable<LoginResponse> {
     const loginData = { email, password };
 

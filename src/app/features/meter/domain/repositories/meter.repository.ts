@@ -12,4 +12,5 @@ export interface MeterRepository {
   updateMeter(id: number, meter: Partial<Meter>): Observable<Meter>;
   deleteMeter(id: number): Observable<void>;
   searchMeters(query: string): Observable<MeterResponse>;
+  isMeterNumberTaken(meterNumber: string): Observable<boolean>;
 }

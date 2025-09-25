@@ -1,4 +1,4 @@
-/* Global background that adapts */
+/* Global background and font */
 body, ion-content {
   --background: var(--ion-background-color);
   font-family: "Inter", "Segoe UI", Roboto, sans-serif;
@@ -6,8 +6,8 @@ body, ion-content {
 
 /* Card styling */
 ion-card {
-  max-width: 420px;
-  margin: 40px auto;
+  max-width: 600px;
+  margin: 24px 24px;
   border-radius: 12px;
   background: var(--ion-card-background, var(--ion-background-color));
   color: var(--ion-text-color);
@@ -20,24 +20,52 @@ ion-card:hover {
   transform: translateY(-3px);
 }
 
-/* Title */
-ion-card-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 0.5rem;
-  color: var(--ion-text-color);
+/* Error alert container */
+.alert {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background 0.3s ease, color 0.3s ease;
+  border-left: 4px solid var(--ion-color-danger);
+  background: color-mix(in srgb, var(--ion-color-danger) 10%, transparent);
+  color: var(--ion-color-danger);
 }
 
-/* Error summary */
-.error-summary {
-  border-left: 4px solid var(--ion-color-warning);
-  padding-left: 10px;
+/* Error alert list */
+.alert ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.alert li {
+  margin-bottom: 0.25rem;
+  position: relative;
+}
+
+.alert li::before {
+  content: "•";
+  color: var(--ion-color-danger);
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+/* Inline input errors */
+.inline-error {
+  font-size: 0.8rem;
+  color: var(--ion-color-danger);
+  background: color-mix(in srgb, var(--ion-color-danger) 5%, transparent);
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  background: color-mix(in srgb, var(--ion-color-warning) 10%, transparent);
-  color: var(--ion-text-color);
+  display: inline-block;
+  margin-top: 0.25rem;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* Button container */
@@ -47,7 +75,23 @@ ion-card-title {
   gap: 0.75rem;
 }
 
-/* Ensure custom buttons expand full width */
-app-shared-button {
-  width: 100%;
+/* Light mode tweaks */
+body:not([data-theme='dark']) .alert {
+  background: color-mix(in srgb, var(--ion-color-danger) 10%, #fff);
+  color: var(--ion-color-danger);
+}
+
+body:not([data-theme='dark']) .inline-error {
+  background: color-mix(in srgb, var(--ion-color-danger) 5%, #fff);
+}
+
+/* Dark mode tweaks */
+body[data-theme='dark'] .alert {
+  background: color-mix(in srgb, var(--ion-color-danger) 20%, #222);
+  color: var(--ion-color-light);
+}
+
+body[data-theme='dark'] .inline-error {
+  background: color-mix(in srgb, var(--ion-color-danger) 15%, #222);
+  color: var(--ion-color-light);
 }

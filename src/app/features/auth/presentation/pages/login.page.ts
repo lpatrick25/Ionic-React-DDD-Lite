@@ -3,8 +3,8 @@ import { LoadingController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AuthEntity } from '../../domain/entities/auth.entity';
-import { LoginUseCase } from '../../application/use-cases/login.usecase';
-import { LoginDto } from '../../application/dto/auth.dto';
+import { AuthUseCase } from '../../application/use-cases/auth.usecase';
+import { AuthDto } from '../../application/dto/auth.dto';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +19,7 @@ export class LoginPage implements OnInit {
   constructor(
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private loginUseCase: LoginUseCase,
+    private loginUseCase: AuthUseCase,
     private router: Router
   ) {}
 
@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
     console.log('LoginPage initialized'); // Debug log
   }
 
-  async onLogin(formData: LoginDto) {
+  async onLogin(formData: AuthDto) {
     console.log('Handling login submit:', formData); // Debug log
     this.isLoading$.next(true);
 
@@ -52,7 +52,7 @@ export class LoginPage implements OnInit {
           this.router.navigate(['/users'], { replaceUrl: true });
         },
         error: (error) => {
-          console.error('Login error:', error); // Debug log
+          console.error('Login error 456:', error);
           const errorMessage = error.message || 'Login failed';
           const validationErrors = error.errors as
             | { [key: string]: string[] }

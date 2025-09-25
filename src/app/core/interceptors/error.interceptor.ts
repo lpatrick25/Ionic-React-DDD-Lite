@@ -1,23 +1,17 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HTTP_STATUS } from '../constants/api.constants';
 import { ToastController } from '@ionic/angular';
 import { ApiErrorResponse } from '../../features/user/application/dto/user.dto';
-import { ToastConfig } from '../types/toast.types';
+import { ToastConfig, ToastPosition, ToastColor } from '../types/toast.types';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  // Fix: Use literal type for position
   private readonly DEFAULT_DURATION = 3000;
-  private readonly DEFAULT_COLOR = 'danger';
-  private readonly DEFAULT_POSITION: 'top' | 'bottom' | 'middle' = 'top';
+  private readonly DEFAULT_COLOR: ToastColor = 'danger';
+  private readonly DEFAULT_POSITION: ToastPosition = 'top';
 
   constructor(private toastController: ToastController) {}
 
@@ -41,7 +35,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       message: this.getErrorMessage(error),
       duration: this.DEFAULT_DURATION,
       position: this.DEFAULT_POSITION,
-      color: this.DEFAULT_COLOR,
+      color: this.DEFAULT_COLOR
     };
 
     // Customize based on error type
@@ -53,8 +47,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         break;
       case HTTP_STATUS.FORBIDDEN:
         config.color = 'warning';
-        config.message =
-          "Access denied. You don't have permission to perform this action.";
+        config.message = 'Access denied. You don\'t have permission to perform this action.';
         break;
       case HTTP_STATUS.NOT_FOUND:
         config.color = 'warning';

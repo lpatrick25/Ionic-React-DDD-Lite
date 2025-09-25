@@ -18,6 +18,7 @@ import { GetConsumersUseCase } from './application/use-cases/get-consumers.useca
 import { UpdateConsumerUseCase } from './application/use-cases/update-consumer.usecase';
 import { DeleteConsumerUseCase } from './application/use-cases/delete-consumer.usecase';
 import { CONSUMER_REPOSITORY } from './domain/repositories/consumer.repository';
+import { ConsumerValidator } from './application/services/consumer-validator.service';
 
 // 👇 Add child route here
 const routes: Routes = [
@@ -50,8 +51,10 @@ const routes: Routes = [
     UpdateConsumerUseCase,
     DeleteConsumerUseCase,
 
+    ConsumerValidator,
+
     // Repository binding
-    { provide: CONSUMER_REPOSITORY, useExisting: ConsumerApiRepository }
+    { provide: CONSUMER_REPOSITORY, useClass: ConsumerApiRepository }
   ]
 })
 export class ConsumerModule { }

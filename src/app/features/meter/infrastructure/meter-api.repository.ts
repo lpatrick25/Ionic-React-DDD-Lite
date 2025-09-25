@@ -107,4 +107,11 @@ export class MeterApiRepository implements MeterRepository {
   private mapApiToEntity(apiMeter: MeterApiResponse): MeterEntity {
     return MeterEntity.fromApiResponse(apiMeter);
   }
+
+  isMeterNumberTaken(meterNumber: string): Observable<boolean> {
+    const params = new HttpParams().set('meter_number', meterNumber);
+    return this.apiService
+      .get<{ taken: boolean }>(`/check-meter-number`, params)
+      .pipe(map((res) => res.taken));
+  }
 }

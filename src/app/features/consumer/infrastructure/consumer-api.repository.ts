@@ -11,7 +11,10 @@ import {
   ConsumerApiResponse,
   ConsumerEntity,
 } from '../domain/entities/consumer.entity';
-import { CreateConsumerDto, UpdateConsumerDto } from '../application/dto/consumer.dto';
+import {
+  CreateConsumerDto,
+  UpdateConsumerDto,
+} from '../application/dto/consumer.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +24,14 @@ export class ConsumerApiRepository implements ConsumerRepository {
 
   constructor(private apiService: ApiService) {}
 
-  getConsumers(page: number = 1, perPage: number = 10): Observable<ConsumerResponse> {
+  getConsumers(
+    page: number = 1,
+    perPage: number = 10
+  ): Observable<ConsumerResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
 
-    // Fix: Get raw API response and transform it to domain model
     return this.apiService
       .get<ApiConsumerResponse>(this.endpoint, params)
       .pipe(
@@ -40,13 +45,13 @@ export class ConsumerApiRepository implements ConsumerRepository {
     return this.apiService
       .get<ConsumerApiResponse>(`${this.endpoint}/${id}`)
       .pipe(
-        map((apiConsumer: ConsumerApiResponse) => ConsumerEntity.fromApiResponse(apiConsumer))
+        map((apiConsumer: ConsumerApiResponse) =>
+          ConsumerEntity.fromApiResponse(apiConsumer)
+        )
       );
   }
 
-  createConsumer(
-    consumerData: Partial<ConsumerEntity> & { password?: string }
-  ): Observable<ConsumerEntity> {
+  createConsumer(consumerData: Partial<ConsumerEntity>): Observable<ConsumerEntity> {
     const createDto: CreateConsumerDto = {
       first_name: consumerData.firstName!,
       middle_name: consumerData.middleName,
@@ -60,13 +65,15 @@ export class ConsumerApiRepository implements ConsumerRepository {
     return this.apiService
       .post<ConsumerApiResponse>(this.endpoint, createDto)
       .pipe(
-        map((apiConsumer: ConsumerApiResponse) => ConsumerEntity.fromApiResponse(apiConsumer))
+        map((apiConsumer: ConsumerApiResponse) =>
+          ConsumerEntity.fromApiResponse(apiConsumer)
+        )
       );
   }
 
   updateConsumer(
     id: number,
-    consumerData: Partial<ConsumerEntity> & { password?: string }
+    consumerData: Partial<ConsumerEntity>
   ): Observable<ConsumerEntity> {
     const updateDto: UpdateConsumerDto = {
       first_name: consumerData.firstName,
@@ -79,15 +86,12 @@ export class ConsumerApiRepository implements ConsumerRepository {
       status: consumerData.status,
     };
 
-    // Include password only if provided
-    if (consumerData.password) {
-      (updateDto as any).password = consumerData.password;
-    }
-
     return this.apiService
       .put<ConsumerApiResponse>(`${this.endpoint}/${id}`, updateDto)
       .pipe(
-        map((apiConsumer: ConsumerApiResponse) => ConsumerEntity.fromApiResponse(apiConsumer))
+        map((apiConsumer: ConsumerApiResponse) =>
+          ConsumerEntity.fromApiResponse(apiConsumer)
+        )
       );
   }
 
@@ -98,7 +102,6 @@ export class ConsumerApiRepository implements ConsumerRepository {
   searchConsumers(query: string): Observable<ConsumerResponse> {
     const params = new HttpParams().set('search', query);
 
-    // Fix: Get raw API response and transform it to domain model
     return this.apiService
       .get<ApiConsumerResponse>(this.endpoint, params)
       .pipe(
@@ -108,8 +111,17 @@ export class ConsumerApiRepository implements ConsumerRepository {
       );
   }
 
-  // Keep the original mapping method for reference (optional)
-  private mapApiToEntity(apiConsumer: ConsumerApiResponse): ConsumerEntity {
-    return ConsumerEntity.fromApiResponse(apiConsumer);
+  isEmailTaken(email: string): Observable<boolean> {
+    const params = new HttpParams().set('email', email);
+    return this.apiService
+      .get<{ taken: boolean }>(`/check-email`, params)
+      .pipe(map((res) => res.taken));
+  }
+
+  isPhoneTaken(phoneNumber: string): Observable<boolean> {
+    const params = new HttpParams().set('phone_number', phoneNumber);
+    return this.apiService
+      .get<{ taken: boolean }>(`/check-phone`, params)
+      .pipe(map((res) => res.taken));
   }
 }

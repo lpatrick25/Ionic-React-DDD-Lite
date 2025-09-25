@@ -5,21 +5,25 @@ import {
   Validators,
   AbstractControl,
   ValidationErrors,
+  AsyncValidatorFn,
 } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { ModalController } from '@ionic/angular';
 import { ROLES } from '../../../../../core/constants/api.constants';
 import { UserEntity } from '../../../domain/entities/user.entity';
 import { UserFormData } from '../../../application/dto/user.dto';
-import { ModalController } from '@ionic/angular';
+import { UserValidator } from '../../../application/services/user-validator.service';
 
-// Import types from constants
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
-// Define error message structure with proper typing
 interface ErrorMessageConfig {
   required?: string;
   minlength?: string;
   email?: string;
   pattern?: string;
+  emailTaken?: string;
+  phoneTaken?: string;
 }
 
 interface ErrorMessages {
@@ -28,15 +32,16 @@ interface ErrorMessages {
   phoneNumber: ErrorMessageConfig;
   email: ErrorMessageConfig;
   password: ErrorMessageConfig;
+  role: ErrorMessageConfig;
 }
 
-// Define valid field names as a union type
 type FormFieldName =
   | 'firstName'
   | 'lastName'
   | 'phoneNumber'
   | 'email'
-  | 'password';
+  | 'password'
+  | 'role';
 
 @Component({
   selector: 'app-user-form',
@@ -56,16 +61,18 @@ export class UserFormComponent implements OnInit {
   userForm: FormGroup;
   roles = Object.values(ROLES);
   isEditMode = false;
+  showErrorSummary = true;
 
-  constructor(private fb: FormBuilder, private modalCtrl: ModalController) {
+  constructor(
+    private fb: FormBuilder,
+    private modalCtrl: ModalController,
+    private userValidator: UserValidator
+  ) {
     this.userForm = this.createForm();
   }
 
   ngOnInit() {
-    // Set edit mode based on whether a user is provided
     this.isEditMode = !!this.user;
-
-    // Populate form only if in edit mode and user is provided
     if (this.isEditMode && this.user) {
       this.populateForm(this.user);
     }
@@ -77,15 +84,39 @@ export class UserFormComponent implements OnInit {
       middleName: [''],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       extensionName: [''],
-      phoneNumber: ['', [Validators.required, Validators.pattern(/^09\d{9}$/)]],
-      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^09\d{9}$/)],
+        [this.phoneValidator()],
+      ],
+      email: ['', [Validators.required, Validators.email], [this.emailValidator()]],
       password: [
         '',
         this.isEditMode ? [] : [Validators.required, Validators.minLength(6)],
       ],
-      role: [ROLES.CASHIER, Validators.required],
+      role: ['', Validators.required],
       status: [true],
     });
+  }
+
+  private emailValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) return of(null);
+      return this.userValidator.validateEmail(control.value).pipe(
+        map((isTaken) => (isTaken ? { emailTaken: true } : null)),
+        catchError(() => of(null))
+      );
+    };
+  }
+
+  private phoneValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) return of(null);
+      return this.userValidator.validatePhone(control.value).pipe(
+        map((isTaken) => (isTaken ? { phoneTaken: true } : null)),
+        catchError(() => of(null))
+      );
+    };
   }
 
   private populateForm(user: UserEntity) {
@@ -100,53 +131,66 @@ export class UserFormComponent implements OnInit {
       status: user.isActive(),
     });
 
-    // In edit mode, make password optional
-    if (this.isEditMode) {
+    if (this.isEditMode && this.user) {
       const passwordControl = this.userForm.get('password');
+      const emailControl = this.userForm.get('email');
+      const phoneControl = this.userForm.get('phoneNumber');
       if (passwordControl) {
         passwordControl.clearValidators();
-        passwordControl.updateValueAndValidity();
+        passwordControl.updateValueAndValidity({ emitEvent: false });
+      }
+      if (emailControl?.value === this.user.email) {
+        emailControl.clearAsyncValidators();
+        emailControl.updateValueAndValidity({ emitEvent: false });
+      }
+      if (phoneControl?.value === this.user.phoneNumber) {
+        phoneControl.clearAsyncValidators();
+        phoneControl.updateValueAndValidity({ emitEvent: false });
       }
     }
   }
 
   onSubmit() {
-    // Mark all fields as touched to show validation errors
     this.markFormGroupTouched();
+    this.showErrorSummary = true;
 
-    if (this.userForm.valid) {
-      const formData: UserFormData = {
-        firstName: this.userForm.value.firstName,
-        middleName: this.userForm.value.middleName || null,
-        lastName: this.userForm.value.lastName,
-        extensionName: this.userForm.value.extensionName || null,
-        phoneNumber: this.userForm.value.phoneNumber,
-        email: this.userForm.value.email,
-        password: this.userForm.value.password || undefined,
-        role: this.userForm.value.role,
-        status: this.userForm.value.status,
-      };
-
-      console.log('Form Data to Submit:', formData); // Debug log
-
-      // Emit the form data and let parent handle modal dismissal
-      // this.formSubmit.emit({
-      //   submitted: true,
-      //   formData: formData,
-      // });
-      this.modalCtrl.dismiss({
-        submitted: true,
-        formData: this.userForm.value,
+    if (this.userForm.pending) {
+      this.userForm.statusChanges.subscribe((status) => {
+        if (status === 'VALID') {
+          this.submitForm();
+        } else if (status === 'INVALID') {
+          console.log('Form invalid, validation errors:', this.userForm.errors);
+        }
       });
+    } else if (this.userForm.valid) {
+      this.submitForm();
     } else {
-      console.log('Form invalid, validation errors:', this.userForm.errors); // Debug log
-      // Do NOT reset the form or dismiss the modal
-      // Validation errors are displayed via template
+      console.log('Form invalid, validation errors:', this.userForm.errors);
     }
   }
 
+  private submitForm() {
+    const formData: UserFormData = {
+      firstName: this.userForm.value.firstName,
+      middleName: this.userForm.value.middleName || null,
+      lastName: this.userForm.value.lastName,
+      extensionName: this.userForm.value.extensionName || null,
+      phoneNumber: this.userForm.value.phoneNumber,
+      email: this.userForm.value.email,
+      password: this.userForm.value.password || undefined,
+      role: this.userForm.value.role,
+      status: this.userForm.value.status,
+    };
+
+    console.log('Form Data to Submit:', formData);
+
+    this.formSubmit.emit({
+      submitted: true,
+      formData,
+    });
+  }
+
   onCancel() {
-    // Reset form only on cancel
     this.userForm.reset({
       firstName: '',
       middleName: '',
@@ -159,40 +203,103 @@ export class UserFormComponent implements OnInit {
       status: true,
     });
     this.formCancel.emit();
-    this.modalCtrl.dismiss(); // Dismiss modal on cancel
+    this.modalCtrl.dismiss();
+  }
+
+  dismissErrorSummary() {
+    this.showErrorSummary = false;
+  }
+
+  setBackendErrors(errors: { [key: string]: string[] }) {
+    Object.entries(errors).forEach(([field, messages]) => {
+      const control = this.userForm.get(field);
+      if (control) {
+        control.setErrors({ backendError: messages.join(', ') });
+        control.markAsTouched();
+      }
+    });
+    this.showErrorSummary = true;
   }
 
   get f() {
     return this.userForm.controls;
   }
 
-  getErrorMessage(fieldName: FormFieldName): string {
+  getErrorMessage(fieldName: FormFieldName, includeFieldName: boolean = false): string {
     const control = this.userForm.get(fieldName);
     if (!control?.invalid || !control.touched) return '';
 
     const errors = control.errors;
     const fieldErrors = this.errorMessages[fieldName];
+    const fieldLabel = this.getFieldLabel(fieldName);
 
     if (errors?.['required']) {
-      return fieldErrors?.required || 'This field is required';
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.required || 'This field is required'}`
+        : fieldErrors?.required || 'This field is required';
     }
-
     if (errors?.['email']) {
-      return fieldErrors?.email || 'Invalid email format';
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.email || 'Invalid email format'}`
+        : fieldErrors?.email || 'Invalid email format';
     }
-
     if (errors?.['minlength']) {
-      return (
-        fieldErrors?.minlength ||
-        `Minimum length is ${errors['minlength'].requiredLength}`
-      );
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.minlength || `Minimum length is ${errors['minlength'].requiredLength}`}`
+        : fieldErrors?.minlength || `Minimum length is ${errors['minlength'].requiredLength}`;
     }
-
     if (errors?.['pattern']) {
-      return fieldErrors?.pattern || 'Invalid format';
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.pattern || 'Invalid format'}`
+        : fieldErrors?.pattern || 'Invalid format';
     }
+    if (errors?.['emailTaken']) {
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.emailTaken || 'Email is already taken'}`
+        : fieldErrors?.emailTaken || 'Email is already taken';
+    }
+    if (errors?.['phoneTaken']) {
+      return includeFieldName
+        ? `${fieldLabel}: ${fieldErrors?.phoneTaken || 'Phone number is already taken'}`
+        : fieldErrors?.phoneTaken || 'Phone number is already taken';
+    }
+    if (errors?.['backendError']) {
+      return includeFieldName
+        ? `${fieldLabel}: ${errors['backendError']}`
+        : errors['backendError'];
+    }
+    return includeFieldName ? `${fieldLabel}: Invalid input` : 'Invalid input';
+  }
 
-    return 'Invalid input';
+  getAllErrorMessages(): string[] {
+    if (!this.showErrorSummary) return [];
+    const errorMessages: string[] = [];
+    Object.keys(this.userForm.controls).forEach((key) => {
+      const control = this.userForm.get(key);
+      if (
+        control?.invalid &&
+        control.touched &&
+        (key as FormFieldName) in this.errorMessages
+      ) {
+        const message = this.getErrorMessage(key as FormFieldName, true);
+        if (message) {
+          errorMessages.push(message);
+        }
+      }
+    });
+    return errorMessages;
+  }
+
+  private getFieldLabel(fieldName: FormFieldName): string {
+    const labels: Record<FormFieldName, string> = {
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      phoneNumber: 'Phone Number',
+      email: 'Email',
+      password: 'Password',
+      role: 'Role',
+    };
+    return labels[fieldName] || fieldName;
   }
 
   get errorMessages(): ErrorMessages {
@@ -208,20 +315,21 @@ export class UserFormComponent implements OnInit {
       phoneNumber: {
         required: 'Phone number is required',
         pattern: 'Phone number must be in format 09xxxxxxxxx',
+        phoneTaken: 'Phone number is already taken',
       },
       email: {
         required: 'Email is required',
         email: 'Please enter a valid email address',
+        emailTaken: 'Email is already taken',
       },
       password: {
         required: 'Password is required',
         minlength: 'Password must be at least 6 characters',
       },
+      role: {
+        required: 'Role is required',
+      },
     };
-  }
-
-  isFormValid(): boolean {
-    return this.userForm.valid && this.userForm.touched;
   }
 
   getFormErrorsCount(): number {

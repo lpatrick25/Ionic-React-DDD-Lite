@@ -1,13 +1,11 @@
 <ion-card>
-
   <ion-card-content>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-      <!-- Validation Summary -->
-      <ion-item
+      <!-- Validation Summary (Always Visible) -->
+      <!-- <ion-item
         *ngIf="getFormErrorsCount() > 0 && loginForm.touched"
-        color="warning"
+        class="alert alert-danger summary-card"
         lines="none"
-        class="error-summary"
       >
         <ion-icon
           name="alert-circle-outline"
@@ -15,17 +13,26 @@
           color="warning"
         ></ion-icon>
         <ion-label>
-          <h3>
-            Form has {{ getFormErrorsCount() }} error{{
-              getFormErrorsCount() !== 1 ? "s" : ""
-            }}
-          </h3>
-          <p>Please fix the errors below to continue.</p>
+          Form has {{ getFormErrorsCount() }} error{{
+            getFormErrorsCount() !== 1 ? "s" : ""
+          }}
         </ion-label>
-      </ion-item>
+      </ion-item> -->
+
+      <!-- Validation Alert (Detailed messages) -->
+      <div
+        *ngIf="getFormErrorMessages().length > 0 && loginForm.touched"
+        class="alert alert-danger"
+      >
+        <ul>
+          <li *ngFor="let error of getFormErrorMessages()">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
 
       <!-- Email -->
-      <ion-item>
+      <ion-item [class.invalid]="f['email'].invalid && f['email'].touched">
         <ion-label position="stacked">
           Email <ion-text color="danger">*</ion-text>
         </ion-label>
@@ -36,7 +43,7 @@
         ></ion-input>
         <ion-note
           *ngIf="f['email'].invalid && f['email'].touched"
-          color="danger"
+          class="inline-error"
           slot="error"
         >
           {{ getErrorMessage("email") }}
@@ -44,7 +51,9 @@
       </ion-item>
 
       <!-- Password -->
-      <ion-item>
+      <ion-item
+        [class.invalid]="f['password'].invalid && f['password'].touched"
+      >
         <ion-label position="stacked">
           Password <ion-text color="danger">*</ion-text>
         </ion-label>
@@ -55,7 +64,7 @@
         ></ion-input>
         <ion-note
           *ngIf="f['password'].invalid && f['password'].touched"
-          color="danger"
+          class="inline-error"
           slot="error"
         >
           {{ getErrorMessage("password") }}
@@ -77,16 +86,6 @@
           ></ion-spinner>
           Login
         </ion-button>
-
-        <!-- <ion-button
-          expand="block"
-          fill="clear"
-          (click)="onCancel()"
-          [disabled]="isLoading"
-          color="medium"
-        >
-          Cancel
-        </ion-button> -->
       </div>
     </form>
   </ion-card-content>

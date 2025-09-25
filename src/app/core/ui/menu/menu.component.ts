@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 interface MenuItem {
   title: string;
@@ -30,4 +31,14 @@ export class MenuComponent {
       icon: 'speedometer-outline',
     },
   ];
+
+  constructor(private authService: AuthService) {}
+
+  async onLogout() {
+    try {
+      await this.authService.logout();
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  }
 }

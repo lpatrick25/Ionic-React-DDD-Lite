@@ -1,26 +1,51 @@
 <ion-card>
-
   <ion-card-content>
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
-      <!-- Validation Summary -->
-      <ion-item *ngIf="getFormErrorsCount() > 0 && userForm.touched" color="warning" lines="none" class="error-summary">
-        <ion-icon name="alert-circle-outline" slot="start" color="warning"></ion-icon>
-        <ion-label>
-          <h3>Form has {{ getFormErrorsCount() }} error{{ getFormErrorsCount() !== 1 ? 's' : '' }}</h3>
-          <p>Please fix the errors below to continue.</p>
-        </ion-label>
-      </ion-item>
+      <!-- Validation Summary (Always Visible) -->
+      <ion-card
+        *ngIf="getFormErrorsCount() > 0 && userForm.touched"
+        class="alert alert-danger summary-card"
+        role="alert"
+      >
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="alert-circle-outline" color="warning"></ion-icon>
+            Form Errors
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ul class="error-list">
+            <li *ngFor="let error of getAllErrorMessages()">
+              <ion-icon
+                name="warning-outline"
+                slot="start"
+                color="danger"
+              ></ion-icon>
+              {{ error }}
+            </li>
+          </ul>
+        </ion-card-content>
+      </ion-card>
 
       <!-- Personal Information -->
-      <ion-item>
-        <ion-label position="stacked">First Name <ion-text color="danger">*</ion-text></ion-label>
+      <ion-item
+        [class.invalid]="f['firstName'].invalid && f['firstName'].touched"
+      >
+        <ion-label position="stacked">
+          First Name <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="firstName"
           type="text"
-          placeholder="Enter first name">
-        </ion-input>
-        <ion-note *ngIf="f['firstName'].invalid && f['firstName'].touched" color="danger" slot="error">
-          {{ getErrorMessage('firstName') }}
+          placeholder="Enter first name"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['firstName'].invalid && f['firstName'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("firstName") }}
         </ion-note>
       </ion-item>
 
@@ -29,19 +54,28 @@
         <ion-input
           formControlName="middleName"
           type="text"
-          placeholder="Enter middle name (optional)">
-        </ion-input>
+          placeholder="Enter middle name (optional)"
+        ></ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Last Name <ion-text color="danger">*</ion-text></ion-label>
+      <ion-item
+        [class.invalid]="f['lastName'].invalid && f['lastName'].touched"
+      >
+        <ion-label position="stacked">
+          Last Name <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="lastName"
           type="text"
-          placeholder="Enter last name">
-        </ion-input>
-        <ion-note *ngIf="f['lastName'].invalid && f['lastName'].touched" color="danger" slot="error">
-          {{ getErrorMessage('lastName') }}
+          placeholder="Enter last name"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['lastName'].invalid && f['lastName'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("lastName") }}
         </ion-note>
       </ion-item>
 
@@ -50,60 +84,95 @@
         <ion-input
           formControlName="extensionName"
           type="text"
-          placeholder="Jr., Sr., etc. (optional)">
-        </ion-input>
+          placeholder="Jr., Sr., etc. (optional)"
+        ></ion-input>
       </ion-item>
 
       <!-- Contact Information -->
-      <ion-item>
-        <ion-label position="stacked">Phone Number <ion-text color="danger">*</ion-text></ion-label>
+      <ion-item
+        [class.invalid]="f['phoneNumber'].invalid && f['phoneNumber'].touched"
+      >
+        <ion-label position="stacked">
+          Phone Number <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="phoneNumber"
           type="tel"
-          placeholder="09xxxxxxxxx">
-        </ion-input>
-        <ion-note *ngIf="f['phoneNumber'].invalid && f['phoneNumber'].touched" color="danger" slot="error">
-          {{ getErrorMessage('phoneNumber') }}
+          placeholder="09xxxxxxxxx"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['phoneNumber'].invalid && f['phoneNumber'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("phoneNumber") }}
         </ion-note>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Email <ion-text color="danger">*</ion-text></ion-label>
+      <ion-item [class.invalid]="f['email'].invalid && f['email'].touched">
+        <ion-label position="stacked">
+          Email <ion-text color="danger">*</ion-text>
+        </ion-label>
         <ion-input
           formControlName="email"
           type="email"
-          placeholder="user@example.com">
-        </ion-input>
-        <ion-note *ngIf="f['email'].invalid && f['email'].touched" color="danger" slot="error">
-          {{ getErrorMessage('email') }}
+          placeholder="user@example.com"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['email'].invalid && f['email'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("email") }}
         </ion-note>
       </ion-item>
 
       <!-- Password -->
-      <ion-item *ngIf="!isEditMode || (isEditMode && f['password'].value)">
+      <ion-item
+        *ngIf="!isEditMode || (isEditMode && f['password'].value)"
+        [class.invalid]="f['password'].invalid && f['password'].touched"
+      >
         <ion-label position="stacked">
-          {{ isEditMode ? 'New Password (leave empty to keep current)' : 'Password' }}
+          {{
+            isEditMode
+              ? "New Password (leave empty to keep current)"
+              : "Password"
+          }}
           <span *ngIf="!isEditMode"><ion-text color="danger">*</ion-text></span>
         </ion-label>
         <ion-input
           formControlName="password"
           type="password"
-          placeholder="Enter password">
-        </ion-input>
-        <ion-note *ngIf="f['password'].invalid && f['password'].touched && !isEditMode" color="danger" slot="error">
-          {{ getErrorMessage('password') }}
+          placeholder="Enter password"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['password'].invalid && f['password'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("password") }}
         </ion-note>
       </ion-item>
 
       <!-- Role Selection -->
-      <ion-item>
-        <ion-label position="stacked">Role <ion-text color="danger">*</ion-text></ion-label>
+      <ion-item [class.invalid]="f['role'].invalid && f['role'].touched">
+        <ion-label position="stacked"
+          >Role <ion-text color="danger">*</ion-text></ion-label
+        >
         <ion-select formControlName="role" interface="action-sheet">
-          <ion-select-option *ngFor="let role of roles" [value]="role">
-            {{ role }}
-          </ion-select-option>
+          <ion-select-option *ngFor="let role of roles" [value]="role">{{
+            role
+          }}</ion-select-option>
         </ion-select>
-        <ion-note *ngIf="f['role'].invalid && f['role'].touched" color="danger" slot="error">
+        <ion-note
+          *ngIf="f['role'].invalid && f['role'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           Role is required
         </ion-note>
       </ion-item>
@@ -114,20 +183,28 @@
         <ion-toggle
           formControlName="status"
           [color]="f['status'].value ? 'success' : 'danger'"
-          slot="end">
-          <ion-note slot="start">{{ f['status'].value ? 'Active' : 'Inactive' }}</ion-note>
+          slot="end"
+        >
+          <ion-note slot="start">{{
+            f["status"].value ? "Active" : "Inactive"
+          }}</ion-note>
         </ion-toggle>
       </ion-item>
 
       <!-- Action Buttons -->
-      <div class="ion-padding">
+      <div class="ion-padding action-buttons">
         <ion-button
           expand="block"
           type="submit"
           [disabled]="isLoading"
-          color="primary">
-          <ion-spinner *ngIf="isLoading" name="crescent" slot="start"></ion-spinner>
-          {{ isEditMode ? 'Update User' : 'Create User' }}
+          color="primary"
+        >
+          <ion-spinner
+            *ngIf="isLoading"
+            name="crescent"
+            slot="start"
+          ></ion-spinner>
+          {{ isEditMode ? "Update User" : "Create User" }}
         </ion-button>
 
         <ion-button
@@ -135,7 +212,8 @@
           fill="clear"
           (click)="onCancel()"
           [disabled]="isLoading"
-          color="medium">
+          color="medium"
+        >
           Cancel
         </ion-button>
       </div>

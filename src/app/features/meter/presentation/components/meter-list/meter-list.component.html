@@ -1,17 +1,18 @@
+<!-- List of Meters -->
 <ion-item *ngFor="let meter of meters; trackBy: trackByMeterId" lines="full">
   <!-- Avatar -->
-  <ion-avatar slot="start" class="meter-avatar">
-    <ion-icon name="person-circle-outline"></ion-icon>
+  <ion-avatar slot="start" class="list-avatar">
+    <ion-icon name="speedometer-outline"></ion-icon>
   </ion-avatar>
 
   <!-- Main Info -->
   <ion-label>
     <h2>{{ meter.fullName }}</h2>
-    <p class="meter-number">
-      <ion-icon name="speedometer-outline" class="inline-icon"></ion-icon>
+    <p>
+      <ion-icon name="construct-outline" class="inline-icon"></ion-icon>
       {{ meter.meterNumber }}
     </p>
-    <p class="meter-date">
+    <p>
       <ion-icon name="calendar-outline" class="inline-icon"></ion-icon>
       {{ meter.installationDate }}
     </p>
@@ -26,7 +27,7 @@
   </ion-badge>
 
   <!-- Actions -->
-  <ion-buttons slot="end">
+  <ion-buttons slot="end" class="action-buttons">
     <ion-button fill="clear" color="medium" (click)="onEditMeter(meter)">
       <ion-icon name="create-outline"></ion-icon>
     </ion-button>
@@ -35,3 +36,11 @@
     </ion-button>
   </ion-buttons>
 </ion-item>
+
+<!-- Empty State -->
+<ion-card *ngIf="!isLoading && meters.length === 0" class="empty-card">
+  <ion-card-content>
+    <ion-icon name="speedometer-outline" class="empty-icon"></ion-icon>
+    <p>No meters found</p>
+  </ion-card-content>
+</ion-card>

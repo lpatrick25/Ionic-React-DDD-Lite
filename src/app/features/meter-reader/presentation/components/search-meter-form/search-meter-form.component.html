@@ -1,0 +1,56 @@
+<ion-grid fixed>
+  <ion-row>
+    <!-- Printer / Connection Card -->
+    <ion-col size="12">
+      <ion-card class="printer-card">
+        <ion-card-header>
+          <ion-card-title class="text-lg font-semibold text-gray-800">
+            Enter Meter Details
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <ion-item
+              [class.invalid]="
+                f['meterNumber'].invalid && f['meterNumber'].touched
+              "
+            >
+              <ion-label position="stacked">
+                Meter Number <ion-text color="danger">*</ion-text>
+              </ion-label>
+              <ion-input
+                formControlName="meterNumber"
+                type="text"
+                placeholder="Enter meter number"
+              ></ion-input>
+              <ion-note
+                *ngIf="f['meterNumber'].invalid && f['meterNumber'].touched"
+                class="inline-error"
+                slot="error"
+              >
+                <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+                {{ getErrorMessage("meterNumber") }}
+              </ion-note>
+            </ion-item>
+            <!-- Action Buttons -->
+            <div class="ion-padding action-buttons">
+              <ion-button
+                expand="block"
+                type="submit"
+                [disabled]="isLoading"
+                color="primary"
+              >
+                <ion-spinner
+                  *ngIf="isLoading"
+                  name="crescent"
+                  slot="start"
+                ></ion-spinner>
+                Search Meter
+              </ion-button>
+            </div>
+          </form>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>

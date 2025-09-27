@@ -2,7 +2,10 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthEntity } from '../../domain/entities/auth.entity';
 import { AuthDto } from '../dto/auth.dto';
-import { AUTH_REPOSITORY, AuthRepository } from '../../domain/repositories/auth.repository';
+import {
+  AUTH_REPOSITORY,
+  AuthRepository,
+} from '../../domain/repositories/auth.repository';
 import { AuthService } from 'src/app/core/services/auth.service';
 
 @Injectable()

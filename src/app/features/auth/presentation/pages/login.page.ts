@@ -49,7 +49,13 @@ export class LoginPage implements OnInit {
           console.log('Login successful:', auth); // Debug log
           this.showSuccessMessage('Login successful');
 
-          this.router.navigate(['/users'], { replaceUrl: true });
+          console.log(auth.role);
+
+          if (auth.role == 'Admin') {
+            this.router.navigate(['/users'], { replaceUrl: true });
+          } else {
+            this.router.navigate(['/meter-reader'], { replaceUrl: true });
+          }
         },
         error: (error) => {
           console.error('Login error 456:', error);

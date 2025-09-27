@@ -1,0 +1,30 @@
+<ion-content class="home-content">
+  <!-- Top Illustration and Welcome Card -->
+  <div class="top-illustration">
+    <img src="assets/illustration.png" alt="Illustration" />
+    <ion-card class="signin-card">
+      <ion-card-content>
+        <h2>Welcome</h2>
+        <p>MacArthur Water System and Services</p>
+        <ion-button expand="block" color="primary" shape="round">
+          <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+          Meter Reader
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Dashboard Section -->
+  <section class="section">
+    <div class="section-header text-center">
+      <h3>METER BILL</h3>
+    </div>
+
+    <app-search-meter-form
+      [isLoading]="(isLoading$ | async) ?? false"
+      (formSubmit)="onSearch($event.formData)"
+      (formCancel)="onCancel()"
+    >
+    </app-search-meter-form>
+  </section>
+</ion-content>

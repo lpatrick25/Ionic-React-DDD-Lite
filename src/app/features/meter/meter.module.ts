@@ -25,22 +25,18 @@ import { CONSUMER_REPOSITORY } from '../consumer/domain/repositories/consumer.re
 const routes: Routes = [
   {
     path: '',
-    component: MeterPage
-  }
+    component: MeterPage,
+  },
 ];
 
 @NgModule({
-  declarations: [
-    MeterFormComponent,
-    MeterListComponent,
-    MeterPage
-  ],
+  declarations: [MeterFormComponent, MeterListComponent, MeterPage],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
   providers: [
     // Infrastructure
@@ -55,7 +51,7 @@ const routes: Routes = [
 
     // Repository binding
     { provide: METER_REPOSITORY, useExisting: MeterApiRepository },
-    { provide: CONSUMER_REPOSITORY, useExisting: ConsumerApiRepository }
-  ]
+    { provide: CONSUMER_REPOSITORY, useExisting: ConsumerApiRepository },
+  ],
 })
-export class MeterModule { }
+export class MeterModule {}

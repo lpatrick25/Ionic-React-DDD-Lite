@@ -1,0 +1,171 @@
+:host {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", sans-serif;
+}
+
+ion-card {
+  max-width: 720px;
+  margin: 24px 24px;
+  border-radius: 16px;
+  background: var(--ion-card-background, var(--ion-background-color));
+  color: var(--ion-text-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+ion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Validation Summary Card */
+.summary-card {
+  border-left: 4px solid var(--ion-color-warning);
+  background: color-mix(
+    in srgb,
+    var(--ion-color-warning) 10%,
+    var(--ion-background-color)
+  );
+  border-radius: 12px;
+  margin-bottom: 16px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.summary-card ion-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--ion-color-warning) 20%, transparent);
+}
+
+.summary-card ion-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.summary-card .error-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.summary-card .error-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+/* Inline error styling */
+.inline-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: color-mix(
+    in srgb,
+    var(--ion-color-danger) 5%,
+    var(--ion-background-color)
+  );
+  color: var(--ion-color-danger);
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Invalid inputs */
+ion-item.invalid {
+  --border-color: var(--ion-color-danger);
+  --border-width: 2px;
+  background: color-mix(
+    in srgb,
+    var(--ion-color-danger) 5%,
+    var(--ion-background-color)
+  );
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  margin: 16px 0;
+
+  p {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--ion-color-step-600);
+  }
+}
+
+/* Results badge */
+ion-badge {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.action-buttons ion-button {
+  --border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Dark mode tweaks */
+body[data-theme="dark"] {
+  ion-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .summary-card {
+    background: color-mix(
+      in srgb,
+      var(--ion-color-warning) 15%,
+      var(--ion-background-color)
+    );
+    border-color: var(--ion-color-warning-tint);
+  }
+
+  ion-item.invalid {
+    background: color-mix(
+      in srgb,
+      var(--ion-color-danger) 10%,
+      var(--ion-background-color)
+    );
+  }
+
+  .inline-error {
+    background: color-mix(in srgb, var(--ion-color-danger) 15%, #222);
+    color: var(--ion-color-light);
+  }
+}

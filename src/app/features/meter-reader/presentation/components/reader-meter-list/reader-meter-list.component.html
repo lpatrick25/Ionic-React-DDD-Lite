@@ -1,0 +1,58 @@
+<ng-container *ngIf="isLoading; else meterContent">
+  <!-- Loading State -->
+  <ion-card class="empty-card">
+    <ion-card-content>
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Loading meters...</p>
+    </ion-card-content>
+  </ion-card>
+</ng-container>
+
+<ng-template #meterContent>
+  <ng-container *ngIf="meters.length > 0; else noMeters">
+    <!-- Meter List -->
+    <ion-item
+      *ngFor="let meter of meters; trackBy: trackByMeterId"
+      lines="full"
+    >
+      <!-- Avatar -->
+      <ion-avatar slot="start" class="list-avatar">
+        <ion-icon name="speedometer-outline"></ion-icon>
+      </ion-avatar>
+
+      <!-- Main Info -->
+      <ion-label>
+        <h2>{{ meter.fullName }}</h2>
+        <p>
+          <ion-icon name="construct-outline" class="inline-icon"></ion-icon>
+          {{ meter.meterNumber }}
+        </p>
+        <p>
+          <ion-icon name="calendar-outline" class="inline-icon"></ion-icon>
+          {{ meter.installationDate }}
+        </p>
+        <ion-badge color="primary" class="address-badge">
+          Brgy. {{ meter.serviceAddress }}, MacArthur, Leyte
+        </ion-badge>
+      </ion-label>
+
+      <!-- Status -->
+      <ion-badge
+        [color]="isMeterActive(meter) ? 'success' : 'danger'"
+        slot="end"
+      >
+        {{ getDisplayStatus(meter.status) }}
+      </ion-badge>
+    </ion-item>
+  </ng-container>
+
+  <!-- Empty State -->
+  <ng-template #noMeters>
+    <ion-card class="empty-card">
+      <ion-card-content>
+        <ion-icon name="speedometer-outline" class="empty-icon"></ion-icon>
+        <p>No meters found</p>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ng-template>

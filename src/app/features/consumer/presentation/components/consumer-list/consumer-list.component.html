@@ -1,3 +1,4 @@
+<!-- List of Consumers -->
 <ion-item
   *ngFor="let consumer of consumers; trackBy: trackByConsumerId"
   lines="full"
@@ -32,7 +33,7 @@
   </ion-badge>
 
   <!-- Actions -->
-  <ion-buttons slot="end">
+  <ion-buttons slot="end" class="action-buttons">
     <ion-button fill="clear" color="medium" (click)="onEditConsumer(consumer)">
       <ion-icon name="create-outline"></ion-icon>
     </ion-button>
@@ -45,3 +46,11 @@
     </ion-button>
   </ion-buttons>
 </ion-item>
+
+<!-- Empty State -->
+<ion-card *ngIf="!isLoading && consumers.length === 0" class="empty-card">
+  <ion-card-content>
+    <ion-icon name="people-outline" class="empty-icon"></ion-icon>
+    <p>No consumers found</p>
+  </ion-card-content>
+</ion-card>

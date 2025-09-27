@@ -20,10 +20,12 @@ import { AuthGuard } from './guards/auth.guard';
 // UI Components
 import { MainLayoutComponent } from './ui/main-layout/main-layout.component';
 import { MenuComponent } from './ui/menu/menu.component';
+import { MeterLayoutComponent } from './ui/meter-layout/meter-layout.component';
 
 @NgModule({
   declarations: [
     MainLayoutComponent,
+    MeterLayoutComponent,
     MenuComponent
   ],
   imports: [
@@ -51,6 +53,7 @@ import { MenuComponent } from './ui/menu/menu.component';
   ],
   exports: [
     MainLayoutComponent,
+    MeterLayoutComponent
   ]
 })
 export class CoreModule { }

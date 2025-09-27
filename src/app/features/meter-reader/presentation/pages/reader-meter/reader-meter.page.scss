@@ -1,0 +1,27 @@
+/* Toolbar styling */
+ion-toolbar {
+  --background: var(--ion-color-light);
+  --color: var(--ion-text-color);
+  border-bottom: 1px solid var(--ion-border-color, rgba(0, 0, 0, 0.08));
+}
+
+/* Title refinement */
+ion-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Add button icon */
+ion-buttons ion-button ion-icon {
+  font-size: 1.4rem;
+}
+
+/* Searchbar */
+ion-searchbar {
+  --background: var(--ion-color-light-shade);
+  --color: var(--ion-text-color);
+  --icon-color: var(--ion-color-medium);
+  padding-inline: 12px;
+}

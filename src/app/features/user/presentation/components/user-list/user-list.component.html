@@ -1,3 +1,4 @@
+<!-- User List -->
 <ion-item *ngFor="let user of users; trackBy: trackByUserId" lines="full">
   <!-- Avatar -->
   <ion-avatar slot="start" class="list-avatar">
@@ -30,7 +31,7 @@
   </ion-badge>
 
   <!-- Actions -->
-  <ion-buttons slot="end">
+  <ion-buttons slot="end" class="action-buttons">
     <ion-button fill="clear" color="medium" (click)="onEditUser(user)">
       <ion-icon name="create-outline"></ion-icon>
     </ion-button>
@@ -39,3 +40,11 @@
     </ion-button>
   </ion-buttons>
 </ion-item>
+
+<!-- Empty State -->
+<ion-card *ngIf="!isLoading && users.length === 0" class="empty-card">
+  <ion-card-content>
+    <ion-icon name="people-outline" class="empty-icon"></ion-icon>
+    <p>No users found</p>
+  </ion-card-content>
+</ion-card>

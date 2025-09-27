@@ -11,6 +11,7 @@ export interface UserApiResponse {
   phone_number: string;
   email: string;
   email_verified_at?: string | null;
+  password: string;
   role: Role;
   status: Status;
   created_at: string;

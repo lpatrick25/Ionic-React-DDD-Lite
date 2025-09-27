@@ -5,7 +5,9 @@ export const API_ENDPOINTS = {
   LOGIN: '/login',
   USERS: '/users',
   CONSUMERS: '/concessionaires',
-  METERS: '/meters'
+  METERS: '/meters',
+  SEARCH_METER: '/meter-details',
+  CALCULATE_BILL: '/calculate-amount-due',
 } as const;
 
 export const ROLES = {

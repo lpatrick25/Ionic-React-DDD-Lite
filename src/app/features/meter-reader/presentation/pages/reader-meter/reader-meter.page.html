@@ -1,0 +1,45 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <!-- Menu -->
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <!-- Title -->
+    <ion-title> Meters </ion-title>
+
+    <!-- Add Button -->
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        color="primary"
+        (click)="refreshMeters()"
+        aria-label="Refresh Meter"
+      >
+        <ion-icon name="sync-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Optional search bar under toolbar -->
+  <ion-toolbar>
+    <ion-searchbar
+      debounce="400"
+      placeholder="Search meters..."
+      (ionInput)="onSearch('as')"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-reader-meter-list
+    [meters]="(meters$ | async) || []"
+    [isLoading]="(isLoading$ | async) ?? false"
+    [totalCount]="(pagination$ | async)?.totalCount || 0"
+    [currentPage]="(pagination$ | async)?.currentPage || 1"
+    [totalPages]="(pagination$ | async)?.totalPages || 1"
+    (pageChange)="onPageChange($event)"
+    (search)="onSearch($event)"
+  >
+  </app-reader-meter-list>
+</ion-content>

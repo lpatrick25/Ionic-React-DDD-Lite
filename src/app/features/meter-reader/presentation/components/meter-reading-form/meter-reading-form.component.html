@@ -1,0 +1,134 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Meter Reading Details</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <form [formGroup]="form" novalidate>
+      <!-- Validation Summary -->
+      <ion-card
+        *ngIf="getFormErrorsCount() > 0 && form.touched"
+        class="summary-card"
+        role="alert"
+      >
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="alert-circle-outline" color="warning"></ion-icon>
+            Form Errors
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ul class="error-list">
+            <li *ngFor="let error of getAllErrorMessages()">
+              <ion-icon name="warning-outline" color="danger"></ion-icon>
+              {{ error }}
+            </li>
+          </ul>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Static Meter Info -->
+      <ion-item>
+        <ion-label position="stacked">Water Meter Number</ion-label>
+        <ion-text>{{ entity?.meterNumber }}</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Concessionaire Name</ion-label>
+        <ion-text>{{ entity?.concessionaireName }}</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Account Number</ion-label>
+        <ion-text>{{ entity?.accountNumber }}</ion-text>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Previous Reading</ion-label>
+        <ion-text>{{ entity?.previousReading }}</ion-text>
+      </ion-item>
+
+      <!-- Current Reading Input -->
+      <ion-item
+        [class.invalid]="
+          f['currentReading'].invalid && f['currentReading'].touched
+        "
+      >
+        <ion-label position="stacked">
+          Current Reading <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input
+          formControlName="currentReading"
+          type="number"
+          placeholder="Enter current reading"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['currentReading'].invalid && f['currentReading'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          {{ getErrorMessage("currentReading") }}
+        </ion-note>
+      </ion-item>
+
+      <!-- Results -->
+      <ion-item *ngIf="meterReading && !form.invalid">
+        <ion-label>Consumption</ion-label>
+        <ion-badge color="tertiary" slot="end">
+          {{ meterReading.consumption }} cu.m.
+        </ion-badge>
+      </ion-item>
+
+      <ion-item *ngIf="meterReading && !form.invalid">
+        <ion-label>Amount Due</ion-label>
+        <ion-text color="danger" slot="end">
+          ₱{{ meterReading.amountDue }}
+        </ion-text>
+      </ion-item>
+
+      <!-- Loading Spinner -->
+      <div class="loading" *ngIf="isLoading">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <p>Calculating your bill...</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="ion-padding action-buttons">
+        <ion-button
+          expand="block"
+          type="button"
+          color="primary"
+          (click)="calculateBill()"
+          [disabled]="form.invalid"
+        >
+          <ion-spinner
+            *ngIf="isLoading"
+            name="crescent"
+            slot="start"
+          ></ion-spinner>
+          <span *ngIf="!isLoading">Calculate Bill</span>
+          <span *ngIf="isLoading">Calculating...</span>
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          color="success"
+          (click)="printReceipt()"
+          [disabled]="!meterReading || isLoading"
+        >
+          Print Receipt
+        </ion-button>
+
+        <ion-button
+          expand="block"
+          fill="clear"
+          (click)="onCancel()"
+          [disabled]="isLoading"
+          color="medium"
+        >
+          Cancel
+        </ion-button>
+      </div>
+    </form>
+  </ion-card-content>
+</ion-card>

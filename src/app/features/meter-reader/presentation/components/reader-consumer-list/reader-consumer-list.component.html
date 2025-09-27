@@ -1,0 +1,58 @@
+<ng-container *ngIf="isLoading; else consumerContent">
+  <!-- Loading State -->
+  <ion-card class="empty-card">
+    <ion-card-content>
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Loading consumers...</p>
+    </ion-card-content>
+  </ion-card>
+</ng-container>
+
+<ng-template #consumerContent>
+  <ng-container *ngIf="consumers.length > 0; else noConsumers">
+    <!-- Consumer List -->
+    <ion-item
+      *ngFor="let consumer of consumers; trackBy: trackByConsumerId"
+      lines="full"
+    >
+      <!-- Avatar -->
+      <ion-avatar slot="start" class="list-avatar">
+        <ion-icon name="person-outline"></ion-icon>
+      </ion-avatar>
+
+      <!-- Main Info -->
+      <ion-label>
+        <h2>{{ consumer.fullName }}</h2>
+        <p>
+          <ion-icon name="mail-outline" class="inline-icon"></ion-icon>
+          {{ consumer.email }}
+        </p>
+        <p>
+          <ion-icon name="call-outline" class="inline-icon"></ion-icon>
+          {{ consumer.phoneNumber }}
+        </p>
+        <ion-badge color="primary" class="address-badge">
+          Brgy. {{ consumer.address }}, MacArthur, Leyte
+        </ion-badge>
+      </ion-label>
+
+      <!-- Status -->
+      <ion-badge
+        [color]="isConsumerActive(consumer) ? 'success' : 'danger'"
+        slot="end"
+      >
+        {{ getDisplayStatus(consumer.status) }}
+      </ion-badge>
+    </ion-item>
+  </ng-container>
+
+  <!-- Empty State -->
+  <ng-template #noConsumers>
+    <ion-card class="empty-card">
+      <ion-card-content>
+        <ion-icon name="people-outline" class="empty-icon"></ion-icon>
+        <p>No consumers found</p>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ng-template>

@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <!-- Main Toolbar -->
+  <ion-toolbar>
+    <!-- Menu Button -->
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <!-- Title -->
+    <ion-title>Consumers</ion-title>
+
+    <!-- Add Consumer Button -->
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        color="primary"
+        (click)="refreshConsumers()"
+        aria-label="Create Consumer"
+      >
+        <ion-icon name="sync-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Search Toolbar -->
+  <ion-toolbar>
+    <ion-searchbar
+      debounce="400"
+      placeholder="Search consumers..."
+      (ionInput)="onSearch('as')"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-reader-consumer-list
+    [consumers]="(consumers$ | async) || []"
+    [isLoading]="(isLoading$ | async) ?? false"
+    [totalCount]="(pagination$ | async)?.totalCount || 0"
+    [currentPage]="(pagination$ | async)?.currentPage || 1"
+    [totalPages]="(pagination$ | async)?.totalPages || 1"
+    (pageChange)="onPageChange($event)"
+    (search)="onSearch($event)"
+  >
+  </app-reader-consumer-list>
+</ion-content>

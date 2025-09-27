@@ -1,0 +1,119 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- Back Button -->
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()" fill="clear">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- Title -->
+    <ion-title>Search Printers</ion-title>
+
+    <!-- Hide unnamed toggle -->
+    <ion-buttons slot="end">
+      <ion-item lines="none" class="hide-toggle">
+        <ion-checkbox
+          slot="start"
+          [(ngModel)]="hideNoNameChecked"
+          (ionChange)="toggleHideNoName($event)"
+        ></ion-checkbox>
+        <ion-label>Hide unnamed</ion-label>
+      </ion-item>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="printer-content ion-padding">
+  <!-- Printer List -->
+  <ion-list *ngIf="filteredPrinters.length > 0">
+    @for (printer of filteredPrinters; track printer.macAddress) {
+    <ion-card class="printer-card">
+      <ion-card-header>
+        <div class="header-top">
+          <ion-card-title>
+            {{ printer.name || "Unnamed Printer" }}
+          </ion-card-title>
+
+          <!-- Status badge -->
+          <ion-badge
+            [color]="printer.isConnected ? 'success' : 'medium'"
+            class="status-badge"
+          >
+            {{ printer.isConnected ? "Connected" : "Available" }}
+          </ion-badge>
+        </div>
+
+        <ion-card-subtitle>
+          {{ printer.macAddress || "No MAC Address" }}
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-label position="stacked">Printer Name</ion-label>
+          <ion-input
+            [(ngModel)]="printer.name"
+            placeholder="Enter Printer Name"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label position="stacked">MAC Address</ion-label>
+          <ion-input
+            [(ngModel)]="printer.macAddress"
+            placeholder="Printer MAC Address"
+          ></ion-input>
+        </ion-item>
+
+        <div class="card-actions">
+          <ion-button
+            size="small"
+            [color]="printer.isConnected ? 'danger' : 'primary'"
+            [fill]="printer.isConnected ? 'solid' : 'outline'"
+            (click)="
+              printer.isConnected
+                ? disconnectPrinter(printer)
+                : connectPrinter(printer)
+            "
+          >
+            <ion-icon
+              slot="start"
+              [name]="printer.isConnected ? 'power-outline' : 'link-outline'"
+            ></ion-icon>
+            {{ printer.isConnected ? "Disconnect" : "Connect" }}
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+    }
+  </ion-list>
+
+  <!-- Empty state -->
+  <div
+    *ngIf="!isScanning && filteredPrinters.length === 0"
+    class="empty-message"
+  >
+    <ion-icon name="print-outline"></ion-icon>
+    <p>No printers found.<br />Tap "Scan" to search for devices.</p>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isScanning" class="empty-message">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Scanning for printers...</p>
+  </div>
+
+  <!-- Floating Scan button -->
+  <div class="scan-button-container">
+    <ion-button
+      expand="block"
+      color="success"
+      (click)="scanPrinters()"
+      [disabled]="isScanning"
+    >
+      <ion-icon slot="start" name="refresh-circle-outline"></ion-icon>
+      <ion-label>{{ isScanning ? "Scanning..." : "Scan" }}</ion-label>
+    </ion-button>
+  </div>
+</ion-content>

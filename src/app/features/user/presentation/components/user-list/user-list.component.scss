@@ -4,11 +4,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.list-avatar ion-icon {
-  font-size: 2rem;
-  color: var(--ion-color-medium);
+  ion-icon {
+    font-size: 2rem;
+    color: var(--ion-color-medium);
+  }
 }
 
 /* Inline icons inside text */
@@ -20,21 +20,57 @@
 }
 
 /* Label spacing */
-ion-label h2 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: var(--ion-text-color);
-}
+ion-label {
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--ion-text-color);
+  }
 
-ion-label p {
-  font-size: 0.85rem;
-  margin: 2px 0;
-  color: var(--ion-color-medium);
+  p {
+    font-size: 0.85rem;
+    margin: 2px 0;
+    color: var(--ion-color-medium);
+  }
 }
 
 /* Address badge */
 .address-badge {
   margin-top: 6px;
   font-size: 0.75rem;
+}
+
+/* Action buttons */
+.action-buttons ion-button {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  margin-left: 4px;
+
+  ion-icon {
+    font-size: 1.2rem;
+  }
+}
+
+/* Empty state card */
+.empty-card {
+  text-align: center;
+  margin: 2rem auto;
+  padding: 2rem 1rem;
+  max-width: 400px;
+  box-shadow: none;
+  border: 1px dashed var(--ion-color-medium);
+
+  p {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--ion-color-medium);
+  }
+
+  .empty-icon {
+    font-size: 2.5rem;
+    color: var(--ion-color-medium);
+  }
 }

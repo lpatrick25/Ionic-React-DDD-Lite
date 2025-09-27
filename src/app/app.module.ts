@@ -7,6 +7,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
 // Core Module
 import { CoreModule } from './core/core.module';
 
@@ -14,14 +16,11 @@ import { CoreModule } from './core/core.module';
 import { UserModule } from './features/user/user.module';
 import { ConsumerModule } from './features/consumer/consumer.module';
 import { MeterModule } from './features/meter/meter.module';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 // Angular Material Modules
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -34,7 +33,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
   ],
   bootstrap: [AppComponent],
 })

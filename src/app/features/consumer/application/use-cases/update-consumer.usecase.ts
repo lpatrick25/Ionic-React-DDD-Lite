@@ -7,7 +7,6 @@ import {
 } from '../../domain/repositories/consumer.repository';
 import { ConsumerEntity } from '../../domain/entities/consumer.entity';
 import { ConsumerFormData } from '../dto/consumer.dto';
-import { STATUS } from '../../../../core/constants/api.constants';
 import { ConsumerValidator } from '../services/consumer-validator.service';
 
 @Injectable({
@@ -27,14 +26,17 @@ export class UpdateConsumerUseCase {
     return this.validator.validate(formData, id).pipe(
       switchMap(() => {
         const updatedConsumer: Partial<ConsumerEntity> = {
+          meterNumber: formData.meterNumber,
           firstName: formData.firstName,
           middleName: formData.middleName || null,
           lastName: formData.lastName,
           extensionName: formData.extensionName || null,
           address: formData.address,
+          streetAddress: formData.streetAddress || null,
           phoneNumber: formData.phoneNumber,
           email: formData.email,
-          status: formData.status ? STATUS.ACTIVE : STATUS.INACTIVE,
+          meterType: formData.meterType,
+          status: formData.status,
         };
 
         return this.consumerRepository.updateConsumer(id, updatedConsumer);

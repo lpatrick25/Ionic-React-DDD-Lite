@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { ADDRESSES } from '../../../../../core/constants/api.constants';
+import { ADDRESSES, MeterType } from '../../../../../core/constants/api.constants';
 import { ConsumerEntity } from '../../../domain/entities/consumer.entity';
 import { ConsumerFormData } from '../../../application/dto/consumer.dto';
 import { ConsumerValidator } from '../../../application/services/consumer-validator.service';
@@ -20,14 +20,7 @@ interface ErrorMessageConfig {
   pattern?: string;
   emailTaken?: string;
   phoneTaken?: string;
-}
-
-interface ErrorMessages {
-  firstName: ErrorMessageConfig;
-  lastName: ErrorMessageConfig;
-  address: ErrorMessageConfig;
-  phoneNumber: ErrorMessageConfig;
-  email: ErrorMessageConfig;
+  meterNumberTaken?: string;
 }
 
 // Valid form field names
@@ -36,6 +29,8 @@ type FormFieldName =
   | 'lastName'
   | 'address'
   | 'phoneNumber'
+  | 'meterNumber'
+  | 'meterType'
   | 'email';
 
 @Component({
@@ -49,6 +44,7 @@ export class ConsumerFormComponent
   implements OnInit
 {
   addresses = Object.values(ADDRESSES);
+  meterTypes = Object.values(MeterType);
 
   @Input()
   set consumer(consumer: ConsumerEntity | null | undefined) {
@@ -82,7 +78,9 @@ export class ConsumerFormComponent
       middleName: [''],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       extensionName: [''],
-      address: ['', [Validators.required, Validators.minLength(5)]],
+      address: ['', [Validators.required]],
+      streetAddress: [''],
+      meterType: ['', [Validators.required]],
       phoneNumber: [
         '',
         [Validators.required, Validators.pattern(/^09\d{9}$/)],
@@ -115,7 +113,18 @@ export class ConsumerFormComponent
           ),
         ],
       ],
-      status: [true],
+      meterNumber: [
+        '',
+        [Validators.required, Validators.minLength(2)],
+        [
+          this.asyncValidatorService.createMeterNumberValidator(
+            (meterNumber, excludeId) =>
+              this.consumerValidator.validateMeterNumber(meterNumber, excludeId),
+            this.entity?.id ? Number(this.entity.id) : null
+          ),
+        ],
+      ],
+      status: ['Active'],
     });
   }
 
@@ -127,21 +136,27 @@ export class ConsumerFormComponent
       lastName: consumer.lastName,
       extensionName: consumer.extensionName || '',
       address: consumer.address,
+      streetAddress: consumer.streetAddress || '',
       phoneNumber: consumer.phoneNumber,
       email: consumer.email,
-      status: consumer.isActive(),
+      meterNumber: consumer.meterNumber,
+      meterType: consumer.meterType,
+      status: consumer.status,
     });
   }
 
   mapFormToData(): ConsumerFormData {
     return {
+      meterNumber: this.form.value.meterNumber,
       firstName: this.form.value.firstName,
       middleName: this.form.value.middleName || null,
       lastName: this.form.value.lastName,
       extensionName: this.form.value.extensionName || null,
       address: this.form.value.address,
+      streetAddress: this.form.value.streetAddress || null,
       phoneNumber: this.form.value.phoneNumber,
       email: this.form.value.email,
+      meterType: this.form.value.meterType,
       status: this.form.value.status,
     };
   }
@@ -153,6 +168,8 @@ export class ConsumerFormComponent
       address: 'Address',
       phoneNumber: 'Phone Number',
       email: 'Email',
+      meterNumber: 'Meter Number',
+      meterType: 'Meter Type',
     };
   }
 
@@ -180,6 +197,14 @@ export class ConsumerFormComponent
         email: 'Please enter a valid email address',
         emailTaken: 'Email is already taken',
       },
+      meterNumber: {
+        required: 'Meter number is required',
+        minlength: 'Meter number must be at least 2 characters',
+        meterNumberTaken: 'Meter number is already taken',
+      },
+      meterType: {
+        required: 'Meter type is required',
+      },
     };
   }
 
@@ -190,9 +215,11 @@ export class ConsumerFormComponent
       lastName: '',
       extensionName: '',
       address: '',
+      streetAddress: '',
       phoneNumber: '',
       email: '',
-      status: true,
+      meterType: MeterType.Residential,
+      status: 'Active',
     };
   }
 }

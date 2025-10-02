@@ -1,12 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable, switchMap, throwError } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 import {
   METER_REPOSITORY,
   MeterRepository,
 } from '../../domain/repositories/meter.repository';
 import { MeterFormData } from '../dto/meter.dto';
 import { MeterEntity } from '../../domain/entities/meter.entity';
-import { STATUS } from '../../../../core/constants/api.constants';
 import { MeterValidator } from '../services/meter-validator.service';
 
 @Injectable({
@@ -23,10 +22,7 @@ export class CreateMeterUseCase {
       switchMap(() => {
         const meter: Partial<MeterEntity> & { password?: string } = {
           concessionaireId: formData.concessionaireId,
-          meterNumber: formData.meterNumber,
           installationDate: formData.installationDate,
-          serviceAddress: formData.serviceAddress,
-          status: formData.status ? STATUS.ACTIVE : STATUS.INACTIVE,
         };
 
         return this.meterRepository.createMeter(meter);

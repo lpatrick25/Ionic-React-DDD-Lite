@@ -1,19 +1,20 @@
-import { Status } from "src/app/core/constants/api.constants";
+import { Status } from 'src/app/core/constants/api.constants';
 
 // API Response interfaces - Raw data from backend
 export interface ConcessionaireApiResponse {
   id: number;
   account_number: string;
   full_name: string;
+  meter_number: string;
+  status: Status;
+  address: string;
+  meter_type: string;
 }
 
 export interface MeterApiResponse {
   id: number;
   concessionaire_id: number;
-  meter_number: string;
   installation_date: string;
-  service_address: string;
-  status: Status;
   concessionaire?: ConcessionaireApiResponse | null;
 }
 
@@ -33,7 +34,7 @@ export interface Meter {
   id?: number;
   accountNumber?: string;
   fullName: string;
-  serviceAddress: string;
+  address: string;
   status: Status;
   meterNumber: string;
   installationDate: string;
@@ -58,7 +59,7 @@ export class MeterEntity implements Meter {
   id?: number;
   accountNumber?: string;
   fullName: string = '';
-  serviceAddress: string = '';
+  address: string = '';
   status: Status = 'Active';
   meterNumber: string = '';
   installationDate: string = '';
@@ -78,10 +79,10 @@ export class MeterEntity implements Meter {
       id: apiMeter.id,
       accountNumber: apiMeter.concessionaire?.account_number,
       fullName: apiMeter.concessionaire?.full_name ?? '',
-      serviceAddress: apiMeter.service_address,
-      status: apiMeter.status,
-      meterNumber: apiMeter.meter_number,
-      installationDate: apiMeter.installation_date,
+      address: apiMeter.concessionaire?.address ?? '',
+      status: apiMeter.concessionaire?.status ?? 'Inactive',
+      meterNumber: apiMeter.concessionaire?.meter_number ?? '',
+      installationDate: apiMeter.installation_date, // may need parsing if formatted
       concessionaireId: apiMeter.concessionaire_id,
     });
   }
@@ -89,7 +90,7 @@ export class MeterEntity implements Meter {
   // Helper method to create domain response from API response
   static fromApiResponseList(apiResponse: ApiMeterResponse): MeterResponse {
     return {
-      rows: apiResponse.rows.map(meter => MeterEntity.fromApiResponse(meter)),
+      rows: apiResponse.rows.map((meter) => MeterEntity.fromApiResponse(meter)),
       pagination: {
         currentPage: apiResponse.pagination.current_page,
         lastPage: apiResponse.pagination.last_page,

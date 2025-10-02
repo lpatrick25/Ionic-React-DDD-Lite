@@ -58,28 +58,6 @@
         </ion-note>
       </ion-item>
 
-      <!-- Meter Number -->
-      <ion-item
-        [class.invalid]="f['meterNumber'].invalid && f['meterNumber'].touched"
-      >
-        <ion-label position="stacked">
-          Meter Number <ion-text color="danger">*</ion-text>
-        </ion-label>
-        <ion-input
-          formControlName="meterNumber"
-          type="text"
-          placeholder="Enter meter number"
-        ></ion-input>
-        <ion-note
-          *ngIf="f['meterNumber'].invalid && f['meterNumber'].touched"
-          class="inline-error"
-          slot="error"
-        >
-          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-          {{ getErrorMessage("meterNumber") }}
-        </ion-note>
-      </ion-item>
-
       <!-- Installation Date -->
       <ion-item
         [class.invalid]="
@@ -98,47 +76,6 @@
           <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
           {{ getErrorMessage("installationDate") }}
         </ion-note>
-      </ion-item>
-
-      <!-- Service Address -->
-      <ion-item
-        [class.invalid]="
-          f['serviceAddress'].invalid && f['serviceAddress'].touched
-        "
-      >
-        <ion-label position="stacked">
-          Service Address <ion-text color="danger">*</ion-text>
-        </ion-label>
-        <ion-select formControlName="serviceAddress" interface="action-sheet">
-          <ion-select-option
-            *ngFor="let address of addresses"
-            [value]="address"
-          >
-            Brgy. {{ address }}, MacArthur, Leyte
-          </ion-select-option>
-        </ion-select>
-        <ion-note
-          *ngIf="f['serviceAddress'].invalid && f['serviceAddress'].touched"
-          class="inline-error"
-          slot="error"
-        >
-          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-          {{ getErrorMessage("serviceAddress") }}
-        </ion-note>
-      </ion-item>
-
-      <!-- Status Toggle -->
-      <ion-item>
-        <ion-label>Status</ion-label>
-        <ion-toggle
-          formControlName="status"
-          [color]="f['status'].value ? 'success' : 'danger'"
-          slot="end"
-        >
-          <ion-note slot="start">{{
-            f["status"].value ? "Active" : "Inactive"
-          }}</ion-note>
-        </ion-toggle>
       </ion-item>
 
       <!-- Action Buttons -->

@@ -7,7 +7,6 @@ import {
 } from '../../domain/repositories/consumer.repository';
 import { ConsumerFormData } from '../dto/consumer.dto';
 import { ConsumerEntity } from '../../domain/entities/consumer.entity';
-import { STATUS } from '../../../../core/constants/api.constants';
 import { ConsumerValidator } from '../services/consumer-validator.service';
 
 @Injectable({
@@ -23,6 +22,7 @@ export class CreateConsumerUseCase {
     return this.validator.validate(formData).pipe(
       switchMap(() => {
         const consumer: Partial<ConsumerEntity> = {
+          meterNumber: formData.meterNumber,
           firstName: formData.firstName,
           middleName: formData.middleName || null,
           lastName: formData.lastName,
@@ -30,7 +30,9 @@ export class CreateConsumerUseCase {
           phoneNumber: formData.phoneNumber,
           email: formData.email,
           address: formData.address,
-          status: formData.status ? STATUS.ACTIVE : STATUS.INACTIVE,
+          streetAddress: formData.streetAddress || null,
+          meterType: formData.meterType,
+          status: formData.status,
         };
 
         return this.consumerRepository.createConsumer(consumer);

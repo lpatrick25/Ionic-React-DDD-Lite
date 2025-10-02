@@ -15,21 +15,9 @@ export class MeterValidator {
     @Inject(METER_REPOSITORY) private meterRepository: MeterRepository
   ) {}
 
-  validateMeterNumber(
-    meterNumber: string,
-    excludeId?: number
-  ): Observable<boolean> {
-    return this.meterRepository.isMeterNumberTaken(meterNumber, excludeId);
-  }
-
   validate(formData: MeterFormData, excludeId?: number): Observable<void> {
     // Basic required fields
-    if (
-      !formData.concessionaireId ||
-      !formData.meterNumber ||
-      !formData.installationDate ||
-      !formData.serviceAddress
-    ) {
+    if (!formData.concessionaireId || !formData.installationDate) {
       return throwError(
         () =>
           new Error(
@@ -38,18 +26,6 @@ export class MeterValidator {
       );
     }
 
-    // Uniqueness checks (email and phone concurrently)
-    return forkJoin({
-      isMeterNumberTaken: this.meterRepository.isMeterNumberTaken(
-        formData.meterNumber,
-        excludeId
-      ),
-    }).pipe(
-      switchMap(({ isMeterNumberTaken }) => {
-        if (isMeterNumberTaken)
-          return throwError(() => new Error('Meter number is already taken'));
-        return of(void 0);
-      })
-    );
+    return of(void 0);
   }
 }

@@ -55,13 +55,16 @@ export class ConsumerApiRepository implements ConsumerRepository {
     consumerData: Partial<ConsumerEntity>
   ): Observable<ConsumerEntity> {
     const createDto: CreateConsumerDto = {
+      meter_number: consumerData.meterNumber!,
       first_name: consumerData.firstName!,
       middle_name: consumerData.middleName,
       last_name: consumerData.lastName!,
       extension_name: consumerData.extensionName,
       address: consumerData.address!,
+      street_address: consumerData.streetAddress,
       phone_number: consumerData.phoneNumber!,
       email: consumerData.email!,
+      meter_type: consumerData.meterType!,
     };
 
     return this.apiService
@@ -78,13 +81,16 @@ export class ConsumerApiRepository implements ConsumerRepository {
     consumerData: Partial<ConsumerEntity>
   ): Observable<ConsumerEntity> {
     const updateDto: UpdateConsumerDto = {
+      meter_number: consumerData.meterNumber,
       first_name: consumerData.firstName,
       middle_name: consumerData.middleName,
       last_name: consumerData.lastName,
       extension_name: consumerData.extensionName,
       address: consumerData.address,
+      street_address: consumerData.streetAddress,
       phone_number: consumerData.phoneNumber,
       email: consumerData.email,
+      meter_type: consumerData.meterType,
       status: consumerData.status,
     };
 
@@ -138,6 +144,20 @@ export class ConsumerApiRepository implements ConsumerRepository {
 
     return this.apiService
       .get<{ taken: boolean }>('/check-phone', params)
+      .pipe(map((res) => res.taken));
+  }
+
+  isMeterNumberTaken(
+    meterNumber: string,
+    excludeId?: number
+  ): Observable<boolean> {
+    let params = new HttpParams().set('meter_number', meterNumber);
+    if (excludeId) {
+      params = params.set('exclude_id', excludeId.toString());
+    }
+
+    return this.apiService
+      .get<{ taken: boolean }>(`/check-meter-number`, params)
       .pipe(map((res) => res.taken));
   }
 }

@@ -17,22 +17,17 @@ export type Address = (typeof ADDRESSES)[keyof typeof ADDRESSES];
 interface ErrorMessageConfig {
   required?: string;
   minlength?: string;
-  meterNumberTaken?: string;
 }
 
 interface ErrorMessages {
   concessionaireId: ErrorMessageConfig;
-  meterNumber: ErrorMessageConfig;
   installationDate: ErrorMessageConfig;
-  serviceAddress: ErrorMessageConfig;
 }
 
 // Valid form field names
 type FormFieldName =
   | 'concessionaireId'
-  | 'meterNumber'
-  | 'installationDate'
-  | 'serviceAddress';
+  | 'installationDate';
 
 @Component({
   selector: 'app-meter-form',
@@ -77,20 +72,7 @@ export class MeterFormComponent
     console.log('Creating form with entity ID:', this.entity?.id);
     return this.fb.group({
       concessionaireId: ['', [Validators.required]],
-      meterNumber: [
-        '',
-        [Validators.required, Validators.minLength(2)],
-        [
-          this.asyncValidatorService.createMeterNumberValidator(
-            (meterNumber, excludeId) =>
-              this.meterValidator.validateMeterNumber(meterNumber, excludeId),
-            this.entity?.id ? Number(this.entity.id) : null
-          ),
-        ],
-      ],
       installationDate: ['', [Validators.required]],
-      serviceAddress: ['', [Validators.required]],
-      status: [true],
     });
   }
 
@@ -98,29 +80,21 @@ export class MeterFormComponent
     console.log('Populating form with meter:', meter);
     this.form.patchValue({
       concessionaireId: meter.concessionaireId,
-      meterNumber: meter.meterNumber,
       installationDate: this.formatDateForInput(meter.installationDate),
-      serviceAddress: meter.serviceAddress,
-      status: meter.isActive(),
     });
   }
 
   mapFormToData(): MeterFormData {
     return {
       concessionaireId: this.form.value.concessionaireId,
-      meterNumber: this.form.value.meterNumber,
       installationDate: this.form.value.installationDate,
-      serviceAddress: this.form.value.serviceAddress,
-      status: this.form.value.status,
     };
   }
 
   getFieldLabels(): Record<FormFieldName, string> {
     return {
       concessionaireId: 'Concessionaire',
-      meterNumber: 'Meter Number',
       installationDate: 'Installation Date',
-      serviceAddress: 'Service Address',
     };
   }
 
@@ -129,16 +103,8 @@ export class MeterFormComponent
       concessionaireId: {
         required: 'Concessionaire is required',
       },
-      meterNumber: {
-        required: 'Meter number is required',
-        minlength: 'Meter number must be at least 2 characters',
-        meterNumberTaken: 'Meter number is already taken',
-      },
       installationDate: {
         required: 'Installation date is required',
-      },
-      serviceAddress: {
-        required: 'Service address is required',
       },
     };
   }
@@ -146,9 +112,7 @@ export class MeterFormComponent
   getDefaultFormValues(): any {
     return {
       concessionaireId: '',
-      meterNumber: '',
       installationDate: '',
-      serviceAddress: '',
       status: true,
     };
   }

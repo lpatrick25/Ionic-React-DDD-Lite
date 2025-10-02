@@ -1,7 +1,7 @@
 <ion-card>
   <ion-card-content>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-      <!-- Validation Summary (Always Visible) -->
+      <!-- Validation Summary -->
       <ion-card
         *ngIf="getFormErrorsCount() > 0 && form.touched"
         class="alert alert-danger summary-card"
@@ -27,7 +27,29 @@
         </ion-card-content>
       </ion-card>
 
-      <!-- Personal Information -->
+      <!-- Meter Number -->
+      <ion-item
+        [class.invalid]="f['meterNumber'].invalid && f['meterNumber'].touched"
+      >
+        <ion-label position="stacked">
+          Meter Number <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input
+          formControlName="meterNumber"
+          type="text"
+          placeholder="Enter meter number"
+        ></ion-input>
+        <ion-note
+          *ngIf="f['meterNumber'].invalid && f['meterNumber'].touched"
+          class="inline-error"
+          slot="error"
+        >
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("meterNumber") }}
+        </ion-note>
+      </ion-item>
+
+      <!-- First Name -->
       <ion-item
         [class.invalid]="f['firstName'].invalid && f['firstName'].touched"
       >
@@ -49,6 +71,7 @@
         </ion-note>
       </ion-item>
 
+      <!-- Middle Name -->
       <ion-item>
         <ion-label position="stacked">Middle Name</ion-label>
         <ion-input
@@ -58,6 +81,7 @@
         ></ion-input>
       </ion-item>
 
+      <!-- Last Name -->
       <ion-item
         [class.invalid]="f['lastName'].invalid && f['lastName'].touched"
       >
@@ -79,6 +103,7 @@
         </ion-note>
       </ion-item>
 
+      <!-- Extension Name -->
       <ion-item>
         <ion-label position="stacked">Extension Name</ion-label>
         <ion-input
@@ -111,7 +136,17 @@
         </ion-note>
       </ion-item>
 
-      <!-- Contact -->
+      <!-- Street Address -->
+      <ion-item>
+        <ion-label position="stacked">Street Address</ion-label>
+        <ion-input
+          formControlName="streetAddress"
+          type="text"
+          placeholder="Enter street address (optional)"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Phone Number -->
       <ion-item
         [class.invalid]="f['phoneNumber'].invalid && f['phoneNumber'].touched"
       >
@@ -133,6 +168,7 @@
         </ion-note>
       </ion-item>
 
+      <!-- Email -->
       <ion-item [class.invalid]="f['email'].invalid && f['email'].touched">
         <ion-label position="stacked">
           Email <ion-text color="danger">*</ion-text>
@@ -152,18 +188,38 @@
         </ion-note>
       </ion-item>
 
-      <!-- Status Toggle -->
-      <ion-item>
-        <ion-label>Status</ion-label>
-        <ion-toggle
-          formControlName="status"
-          [color]="f['status'].value ? 'success' : 'danger'"
-          slot="end"
+      <!-- Meter Type -->
+      <ion-item
+        [class.invalid]="f['meterType'].invalid && f['meterType'].touched"
+      >
+        <ion-label position="stacked">
+          Meter Type <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-select formControlName="meterType" interface="action-sheet">
+          <ion-select-option
+            *ngFor="let meterType of meterTypes"
+            [value]="meterType"
+          >
+            {{ meterType }}
+          </ion-select-option>
+        </ion-select>
+        <ion-note
+          *ngIf="f['meterType'].invalid && f['meterType'].touched"
+          class="inline-error"
+          slot="error"
         >
-          <ion-note slot="start">{{
-            f["status"].value ? "Active" : "Inactive"
-          }}</ion-note>
-        </ion-toggle>
+          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+          {{ getErrorMessage("meterType") }}
+        </ion-note>
+      </ion-item>
+
+      <!-- Status -->
+      <ion-item>
+        <ion-label position="stacked">Status</ion-label>
+        <ion-select formControlName="status" interface="action-sheet">
+          <ion-select-option value="Active">Active</ion-select-option>
+          <ion-select-option value="Inactive">Inactive</ion-select-option>
+        </ion-select>
       </ion-item>
 
       <!-- Action Buttons -->

@@ -17,6 +17,11 @@ export const ROLES = {
   HEAD: 'Head',
 } as const;
 
+export enum MeterType {
+  Residential = 'Residential',
+  Commercial = 'Commercial',
+}
+
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
 export const ADDRESSES = {

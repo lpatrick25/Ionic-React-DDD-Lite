@@ -51,10 +51,7 @@ export class MeterApiRepository implements MeterRepository {
   ): Observable<MeterEntity> {
     const createDto: CreateMeterDto = {
       concessionaire_id: meterData.concessionaireId!,
-      meter_number: meterData.meterNumber!,
       installation_date: meterData.installationDate!,
-      service_address: meterData.serviceAddress!,
-      status: meterData.status!,
     };
 
     return this.apiService
@@ -72,10 +69,7 @@ export class MeterApiRepository implements MeterRepository {
   ): Observable<MeterEntity> {
     const updateDto: UpdateMeterDto = {
       concessionaire_id: meterData.concessionaireId,
-      meter_number: meterData.meterNumber,
       installation_date: meterData.installationDate,
-      service_address: meterData.serviceAddress,
-      status: meterData.status,
     };
 
     // Include password only if provided
@@ -112,19 +106,5 @@ export class MeterApiRepository implements MeterRepository {
   // Keep the original mapping method for reference (optional)
   private mapApiToEntity(apiMeter: MeterApiResponse): MeterEntity {
     return MeterEntity.fromApiResponse(apiMeter);
-  }
-
-  isMeterNumberTaken(
-    meterNumber: string,
-    excludeId?: number
-  ): Observable<boolean> {
-    let params = new HttpParams().set('meter_number', meterNumber);
-    if (excludeId) {
-      params = params.set('exclude_id', excludeId.toString());
-    }
-
-    return this.apiService
-      .get<{ taken: boolean }>(`/check-meter-number`, params)
-      .pipe(map((res) => res.taken));
   }
 }

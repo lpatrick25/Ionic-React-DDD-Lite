@@ -1,4 +1,4 @@
-import { Concessionaire } from "../entities/Concessionaire";
+import { Concessionaire } from "../entities/concessionaire.entity";
 
 export interface ConcessionaireRepository {
   getAll(): Promise<Concessionaire[]>;

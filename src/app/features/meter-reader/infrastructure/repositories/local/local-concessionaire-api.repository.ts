@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ConcessionaireRepository } from '../../../domain/repositories/ConcessionaireRepository';
-import { Concessionaire } from '../../../domain/entities/Concessionaire';
+import { ConcessionaireRepository } from '../../../domain/repositories/concessionaire.repository';
+import { Concessionaire } from '../../../domain/entities/concessionaire.entity';
 import { SQLiteService } from '../../services/SQLiteService';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LocalConcessionaireRepository implements ConcessionaireRepository {
+export class LocalConcessionaireApiRepository implements ConcessionaireRepository {
   constructor(private sqliteService: SQLiteService) {}
 
   async getAll(): Promise<Concessionaire[]> {

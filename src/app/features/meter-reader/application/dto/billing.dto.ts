@@ -1,4 +1,4 @@
-import { Billing } from "../../domain/entities/Billing";
+import { Billing } from "../../domain/entities/billing.entity";
 
 export interface BillingDto {
   id: number;

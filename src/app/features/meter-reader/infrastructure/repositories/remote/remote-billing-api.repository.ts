@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BillingRepository } from '../../../domain/repositories/BillingRepository';
-import { Billing } from '../../../domain/entities/Billing';
+import { BillingRepository } from '../../../domain/repositories/billing.repository';
+import { Billing } from '../../../domain/entities/billing.entity';
 import { ApiService } from '../../services/ApiService';
 import {
   BillingDto,
   mapBillingDtoToEntity,
-} from '../../../application/dto/BillingDto';
+} from '../../../application/dto/billing.dto';
 
 @Injectable({
   providedIn: 'root',

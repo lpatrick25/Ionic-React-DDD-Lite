@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { UserRepository } from '../../../domain/repositories/UserRepository';
-import { User } from '../../../domain/entities/User';
+import { UserRepository } from '../../../domain/repositories/user.repository';
+import { User } from '../../../domain/entities/user.entity';
 import { ApiService } from '../../services/ApiService';
-import { UserDto, mapUserDtoToEntity } from '../../../application/dto/UserDto';
+import { UserDto, mapUserDtoToEntity } from '../../../application/dto/user.dto';
 
 @Injectable({
   providedIn: 'root',

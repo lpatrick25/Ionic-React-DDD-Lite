@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BillingRepository } from '../../../domain/repositories/BillingRepository';
-import { Billing } from '../../../domain/entities/Billing';
+import { BillingRepository } from '../../../domain/repositories/billing.repository';
+import { Billing } from '../../../domain/entities/billing.entity';
 import { SQLiteService } from '../../services/SQLiteService';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LocalBillingRepository implements BillingRepository {
+export class LocalBillingApiRepository implements BillingRepository {
   constructor(private sqliteService: SQLiteService) {}
 
   async getAll(): Promise<Billing[]> {

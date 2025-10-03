@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { MeterRepository } from '../../../domain/repositories/MeterRepository';
-import { Meter } from '../../../domain/entities/Meter';
+import { MeterRepository } from '../../../domain/repositories/meter.repository';
+import { Meter } from '../../../domain/entities/meter.entity';
 import { ApiService } from '../../services/ApiService';
-import { MeterDto, mapMeterDtoToEntity } from '../../../application/dto/MeterDto';
+import { MeterDto, mapMeterDtoToEntity } from '../../../application/dto/meter.dto';
 
 @Injectable({
   providedIn: 'root',

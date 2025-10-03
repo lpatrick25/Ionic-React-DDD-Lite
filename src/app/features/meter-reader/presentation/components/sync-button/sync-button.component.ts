@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SyncDataUseCase } from '../../../application/use-cases/SyncDataUseCase';
+import { SyncDataUseCase } from '../../../application/use-cases/sync-data.usecase';
 import {
   IonicModule,
   ToastController,

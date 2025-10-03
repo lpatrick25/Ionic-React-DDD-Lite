@@ -13,12 +13,12 @@ import {
   USER_REPO_REMOTE,
   USER_REPO_LOCAL,
 } from './injection-tokens';
-import { ConcessionaireRepository } from '../../domain/repositories/ConcessionaireRepository';
-import { MeterRepository } from '../../domain/repositories/MeterRepository';
-import { MeterReadingRepository } from '../../domain/repositories/MeterReadingRepository';
-import { BillingRepository } from '../../domain/repositories/BillingRepository';
-import { TariffRateRepository } from '../../domain/repositories/TariffRateRepository';
-import { UserRepository } from '../../domain/repositories/UserRepository';
+import { ConcessionaireRepository } from '../../domain/repositories/concessionaire.repository';
+import { MeterRepository } from '../../domain/repositories/meter.repository';
+import { MeterReadingRepository } from '../../domain/repositories/meter-readings.repository';
+import { BillingRepository } from '../../domain/repositories/billing.repository';
+import { TariffRateRepository } from '../../domain/repositories/tariff-rate.repository';
+import { UserRepository } from '../../domain/repositories/user.repository';
 
 @Injectable({ providedIn: 'root' })
 export class SyncDataUseCase {

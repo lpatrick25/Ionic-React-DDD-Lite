@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { TariffRateRepository } from '../../../domain/repositories/TariffRateRepository';
-import { TariffRate } from '../../../domain/entities/TariffRate';
+import { TariffRateRepository } from '../../../domain/repositories/tariff-rate.repository';
+import { TariffRate } from '../../../domain/entities/tariff-rate.entity';
 import { ApiService } from '../../services/ApiService';
-import { TariffRateDto, mapTariffRateDtoToEntity } from '../../../application/dto/TariffRateDto';
+import { TariffRateDto, mapTariffRateDtoToEntity } from '../../../application/dto/tariff-rate.dto';
 
 @Injectable({
   providedIn: 'root',

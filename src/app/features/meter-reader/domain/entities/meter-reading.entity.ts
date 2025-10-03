@@ -14,6 +14,18 @@ export interface MeterReading {
   amountDue: number;
 }
 
+export interface MeterReadings {
+  id: number;
+  meterId: number;
+  readerId: number | null;
+  readingDate: string;
+  previousReading: number;
+  presentReading: number;
+  consumption: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Entity
 export class MeterReadingEntity implements MeterReading {
   consumption: number = 0;
@@ -23,7 +35,9 @@ export class MeterReadingEntity implements MeterReading {
     Object.assign(this, partial);
   }
 
-  static fromApiResponse(apiResponse: MeterReadingApiResponse): MeterReadingEntity {
+  static fromApiResponse(
+    apiResponse: MeterReadingApiResponse
+  ): MeterReadingEntity {
     const { content } = apiResponse;
 
     return new MeterReadingEntity({

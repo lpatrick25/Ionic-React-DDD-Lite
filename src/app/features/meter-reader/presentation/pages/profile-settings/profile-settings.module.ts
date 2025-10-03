@@ -1,30 +1,51 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { IonicModule } from '@ionic/angular';
+import { HttpClientModule } from '@angular/common/http';
 
 import { ProfileSettingsPageRoutingModule } from './profile-settings-routing.module';
 
 import { ProfileSettingsPage } from './profile-settings.page';
-import { LocalBillingRepository } from '../../../infrastructure/repositories/local/LocalBillingRepository';
-import { LocalConcessionaireRepository } from '../../../infrastructure/repositories/local/LocalConcessionaireRepository';
-import { LocalMeterRepository } from '../../../infrastructure/repositories/local/LocalMeterRepository';
-import { LocalTariffRateRepository } from '../../../infrastructure/repositories/local/LocalTariffRateRepository';
-import { RemoteBillingRepository } from '../../../infrastructure/repositories/remote/RemoteBillingRepository';
-import { RemoteConcessionaireRepository } from '../../../infrastructure/repositories/remote/RemoteConcessionaireRepository';
-import { RemoteMeterRepository } from '../../../infrastructure/repositories/remote/RemoteMeterRepository';
-import { RemoteTariffRateRepository } from '../../../infrastructure/repositories/remote/RemoteTariffRateRepository';
-import { SyncDataUseCase } from '../../../application/use-cases/SyncDataUseCase';
-import { HttpClientModule } from '@angular/common/http';
+import { SyncButtonComponent } from '../../components/sync-button/sync-button.component';
+
+// Use Case
+import {
+  BILLING_REPO_LOCAL,
+  BILLING_REPO_REMOTE,
+  CONCESSIONAIRE_REPO_LOCAL,
+  CONCESSIONAIRE_REPO_REMOTE,
+  METER_READING_REPO_LOCAL,
+  METER_READING_REPO_REMOTE,
+  METER_REPO_LOCAL,
+  METER_REPO_REMOTE,
+  TARIFF_REPO_LOCAL,
+  TARIFF_REPO_REMOTE,
+  USER_REPO_LOCAL,
+  USER_REPO_REMOTE,
+} from '../../../application/use-cases/injection-tokens';
+import { SyncDataUseCase } from '../../../application/use-cases/sync-data.usecase';
+
+
+// Infrastructure Local
+import { LocalUserApiRepository } from '../../../infrastructure/repositories/local/local-user-api.repository';
+import { LocalConcessionaireApiRepository } from '../../../infrastructure/repositories/local/local-concessionaire-api.repository';
+import { LocalMeterApiRepository } from '../../../infrastructure/repositories/local/local-meter-api.repository';
+import { LocalMeterReadingApiRepository } from '../../../infrastructure/repositories/local/local-meter-reading-api.repository';
+import { LocalBillingApiRepository } from '../../../infrastructure/repositories/local/local-billing-api.repository';
+import { LocalTariffRateApiRepository } from '../../../infrastructure/repositories/local/local-tariff-rate-api.repository';
+
+// Infrastructure Remote
+import { RemoteUserRepository } from '../../../infrastructure/repositories/remote/remote-user-repository';
+import { RemoteConcessionaireRepository } from '../../../infrastructure/repositories/remote/remote-concessionaire-api.repository';
+import { RemoteMeterRepository } from '../../../infrastructure/repositories/remote/remote-meter-api.repository';
+import { RemoteMeterReadingRepository } from '../../../infrastructure/repositories/remote/remote-meter-reading-api.repository';
+import { RemoteBillingRepository } from '../../../infrastructure/repositories/remote/remote-billing-api.repository';
+import { RemoteTariffRateRepository } from '../../../infrastructure/repositories/remote/remote-tariff-rate-api.repository';
+
+// Infrastructure Service
 import { SQLiteService } from '../../../infrastructure/services/SQLiteService';
 import { ApiService } from '../../../infrastructure/services/ApiService';
-import { RemoteMeterReadingRepository } from '../../../infrastructure/repositories/remote/RemoteMeterReadingRepository';
-import { LocalMeterReadingRepository } from '../../../infrastructure/repositories/local/LocalMeterReadingRepository';
-import { SyncButtonComponent } from '../../components/sync-button/sync-button.component';
-import { BILLING_REPO_LOCAL, BILLING_REPO_REMOTE, CONCESSIONAIRE_REPO_LOCAL, CONCESSIONAIRE_REPO_REMOTE, METER_READING_REPO_LOCAL, METER_READING_REPO_REMOTE, METER_REPO_LOCAL, METER_REPO_REMOTE, TARIFF_REPO_LOCAL, TARIFF_REPO_REMOTE, USER_REPO_LOCAL, USER_REPO_REMOTE } from '../../../application/use-cases/injection-tokens';
-import { RemoteUserRepository } from '../../../infrastructure/repositories/remote/RemoteUserRepository';
-import { LocalUserRepository } from '../../../infrastructure/repositories/local/LocalUserRepository';
 
 @NgModule({
   imports: [
@@ -38,12 +59,12 @@ import { LocalUserRepository } from '../../../infrastructure/repositories/local/
   declarations: [ProfileSettingsPage],
   providers: [
     //Local
-    LocalBillingRepository,
-    LocalConcessionaireRepository,
-    LocalMeterRepository,
-    LocalMeterReadingRepository,
-    LocalTariffRateRepository,
-    LocalUserRepository,
+    LocalBillingApiRepository,
+    LocalConcessionaireApiRepository,
+    LocalMeterApiRepository,
+    LocalMeterReadingApiRepository,
+    LocalTariffRateApiRepository,
+    LocalUserApiRepository,
 
     //Remote
     RemoteBillingRepository,
@@ -66,11 +87,11 @@ import { LocalUserRepository } from '../../../infrastructure/repositories/local/
     },
     {
       provide: CONCESSIONAIRE_REPO_LOCAL,
-      useClass: LocalConcessionaireRepository,
+      useClass: LocalConcessionaireApiRepository,
     },
 
     { provide: METER_REPO_REMOTE, useClass: RemoteMeterRepository },
-    { provide: METER_REPO_LOCAL, useClass: LocalMeterRepository },
+    { provide: METER_REPO_LOCAL, useClass: LocalMeterApiRepository },
 
     {
       provide: METER_READING_REPO_REMOTE,
@@ -78,17 +99,17 @@ import { LocalUserRepository } from '../../../infrastructure/repositories/local/
     },
     {
       provide: METER_READING_REPO_LOCAL,
-      useClass: LocalMeterReadingRepository,
+      useClass: LocalMeterReadingApiRepository,
     },
 
     { provide: BILLING_REPO_REMOTE, useClass: RemoteBillingRepository },
-    { provide: BILLING_REPO_LOCAL, useClass: LocalBillingRepository },
+    { provide: BILLING_REPO_LOCAL, useClass: LocalBillingApiRepository },
 
     { provide: TARIFF_REPO_REMOTE, useClass: RemoteTariffRateRepository },
-    { provide: TARIFF_REPO_LOCAL, useClass: LocalTariffRateRepository },
+    { provide: TARIFF_REPO_LOCAL, useClass: LocalTariffRateApiRepository },
 
     { provide: USER_REPO_REMOTE, useClass: RemoteUserRepository },
-    { provide: USER_REPO_LOCAL, useClass: LocalUserRepository },
+    { provide: USER_REPO_LOCAL, useClass: LocalUserApiRepository },
   ],
 })
 export class ProfileSettingsPageModule {}

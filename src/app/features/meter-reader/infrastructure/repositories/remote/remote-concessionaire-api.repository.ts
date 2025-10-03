@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ConcessionaireRepository } from '../../../domain/repositories/ConcessionaireRepository';
-import { Concessionaire } from '../../../domain/entities/Concessionaire';
+import { ConcessionaireRepository } from '../../../domain/repositories/concessionaire.repository';
+import { Concessionaire } from '../../../domain/entities/concessionaire.entity';
 import { ApiService } from '../../services/ApiService';
-import { ConcessionaireDto, mapConcessionaireDtoToEntity } from '../../../application/dto/ConcessionaireDto';
+import { ConcessionaireDto, mapConcessionaireDtoToEntity } from '../../../application/dto/concessionaire.dto';
 
 @Injectable({
   providedIn: 'root',

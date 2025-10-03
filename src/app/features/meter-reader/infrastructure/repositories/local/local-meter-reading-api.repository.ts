@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { MeterReadingRepository } from '../../../domain/repositories/MeterReadingRepository';
+import { MeterReadingRepository } from '../../../domain/repositories/meter-readings.repository';
 import { SQLiteService } from '../../services/SQLiteService';
-import { MeterReadings } from '../../../domain/entities/MeterReading';
+import { MeterReadings } from '../../../domain/entities/meter-reading.entity';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LocalMeterReadingRepository implements MeterReadingRepository {
+export class LocalMeterReadingApiRepository implements MeterReadingRepository {
   constructor(private sqliteService: SQLiteService) {}
 
   async getAll(): Promise<MeterReadings[]> {

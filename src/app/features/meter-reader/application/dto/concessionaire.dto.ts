@@ -1,4 +1,4 @@
-import { Concessionaire } from "../../domain/entities/Concessionaire";
+import { Concessionaire } from "../../domain/entities/concessionaire.entity";
 
 export interface ConcessionaireDto {
   id: number;

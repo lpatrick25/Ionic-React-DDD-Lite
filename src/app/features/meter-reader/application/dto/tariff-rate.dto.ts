@@ -1,4 +1,4 @@
-import { TariffRate } from "../../domain/entities/TariffRate";
+import { TariffRate } from "../../domain/entities/tariff-rate.entity";
 
 export interface TariffRateDto {
   id: number;

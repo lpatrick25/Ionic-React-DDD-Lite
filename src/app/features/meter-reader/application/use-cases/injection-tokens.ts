@@ -1,10 +1,10 @@
 import { InjectionToken } from '@angular/core';
-import { ConcessionaireRepository } from '../../domain/repositories/ConcessionaireRepository';
-import { MeterRepository } from '../../domain/repositories/MeterRepository';
-import { BillingRepository } from '../../domain/repositories/BillingRepository';
-import { TariffRateRepository } from '../../domain/repositories/TariffRateRepository';
-import { MeterReadingRepository } from '../../domain/repositories/MeterReadingRepository';
-import { UserRepository } from '../../domain/repositories/UserRepository';
+import { ConcessionaireRepository } from '../../domain/repositories/concessionaire.repository';
+import { MeterRepository } from '../../domain/repositories/meter.repository';
+import { BillingRepository } from '../../domain/repositories/billing.repository';
+import { TariffRateRepository } from '../../domain/repositories/tariff-rate.repository';
+import { MeterReadingRepository } from '../../domain/repositories/meter-readings.repository';
+import { UserRepository } from '../../domain/repositories/user.repository';
 
 export const CONCESSIONAIRE_REPO_REMOTE =
   new InjectionToken<ConcessionaireRepository>(

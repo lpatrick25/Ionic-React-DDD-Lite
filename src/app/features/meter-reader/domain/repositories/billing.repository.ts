@@ -1,4 +1,4 @@
-import { Billing } from "../entities/Billing";
+import { Billing } from "../entities/billing.entity";
 
 export interface BillingRepository {
   getAll(): Promise<Billing[]>;

@@ -1,4 +1,4 @@
-import { MeterReadings } from "../entities/MeterReading";
+import { MeterReadings } from "../entities/meter-reading.entity";
 
 export interface MeterReadingRepository {
   getAll(): Promise<MeterReadings[]>;

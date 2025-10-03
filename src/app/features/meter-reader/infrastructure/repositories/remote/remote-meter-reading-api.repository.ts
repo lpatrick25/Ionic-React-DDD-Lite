@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { MeterReadingRepository } from '../../../domain/repositories/MeterReadingRepository';
+import { MeterReadingRepository } from '../../../domain/repositories/meter-readings.repository';
 import { ApiService } from '../../services/ApiService';
 import { firstValueFrom } from 'rxjs';
-import { mapMeterReadingsDtoToEntity, MeterReadingsDto } from '../../../application/dto/MeterReadingDto';
-import { MeterReadings } from '../../../domain/entities/MeterReading';
+import { mapMeterReadingsDtoToEntity, MeterReadingsDto } from '../../../application/dto/meter-reading.dto';
+import { MeterReadings } from '../../../domain/entities/meter-reading.entity';
 
 @Injectable({
   providedIn: 'root',

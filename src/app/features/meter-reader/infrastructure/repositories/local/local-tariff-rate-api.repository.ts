@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { TariffRateRepository } from '../../../domain/repositories/TariffRateRepository';
-import { TariffRate } from '../../../domain/entities/TariffRate';
+import { TariffRateRepository } from '../../../domain/repositories/tariff-rate.repository';
+import { TariffRate } from '../../../domain/entities/tariff-rate.entity';
 import { SQLiteService } from '../../services/SQLiteService';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LocalTariffRateRepository implements TariffRateRepository {
+export class LocalTariffRateApiRepository implements TariffRateRepository {
   constructor(private sqliteService: SQLiteService) {}
 
   async getAll(): Promise<TariffRate[]> {

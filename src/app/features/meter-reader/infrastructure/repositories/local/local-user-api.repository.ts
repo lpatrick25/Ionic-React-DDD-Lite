@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { UserRepository } from '../../../domain/repositories/UserRepository';
-import { User } from '../../../domain/entities/User';
+import { UserRepository } from '../../../domain/repositories/user.repository';
+import { User } from '../../../domain/entities/user.entity';
 import { SQLiteService } from '../../services/SQLiteService';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LocalUserRepository implements UserRepository {
+export class LocalUserApiRepository implements UserRepository {
   constructor(private sqliteService: SQLiteService) {}
 
   async getAll(): Promise<User[]> {

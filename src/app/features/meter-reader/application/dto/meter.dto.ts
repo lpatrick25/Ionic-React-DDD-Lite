@@ -1,4 +1,4 @@
-import { Meter } from "../../domain/entities/Meter";
+import { Meter } from "../../domain/entities/meter.entity";
 
 export interface MeterDto {
   id: number;

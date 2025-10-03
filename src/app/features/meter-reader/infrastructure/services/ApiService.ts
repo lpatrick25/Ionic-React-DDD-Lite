@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ConcessionaireDto } from '../../application/dto/ConcessionaireDto';
-import { MeterDto } from '../../application/dto/MeterDto';
-import { MeterReadingsDto } from '../../application/dto/MeterReadingDto';
-import { BillingDto } from '../../application/dto/BillingDto';
-import { TariffRateDto } from '../../application/dto/TariffRateDto';
-import { UserDto } from '../../application/dto/UserDto';
+import { ConcessionaireDto } from '../../application/dto/concessionaire.dto';
+import { MeterDto } from '../../application/dto/meter.dto';
+import { BillingDto } from '../../application/dto/billing.dto';
+import { TariffRateDto } from '../../application/dto/tariff-rate.dto';
+import { UserDto } from '../../application/dto/user.dto';
+import { MeterReadingsDto } from '../../application/dto/meter-reading.dto';
 
 @Injectable({
   providedIn: 'root',

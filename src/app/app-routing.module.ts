@@ -76,6 +76,13 @@ const routes: Routes = [
             './features/meter-reader/presentation/pages/meter-bill/meter-bill.module'
           ).then((m) => m.MeterBillPageModule),
       },
+      {
+        path: 'profile-settings',
+        loadChildren: () =>
+          import(
+            './features/meter-reader/presentation/pages/profile-settings/profile-settings.module'
+          ).then((m) => m.ProfileSettingsPageModule),
+      },
     ],
   },
 

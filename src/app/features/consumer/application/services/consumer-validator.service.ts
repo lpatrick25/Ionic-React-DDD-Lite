@@ -19,7 +19,7 @@ export class ConsumerValidator {
   validateEmail(
     email: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean> {
     return this.consumerRepository.isEmailTaken(email, excludeId, type);
   }
@@ -27,7 +27,7 @@ export class ConsumerValidator {
   validatePhone(
     phone: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean> {
     return this.consumerRepository.isPhoneTaken(phone, excludeId, type);
   }
@@ -78,12 +78,12 @@ export class ConsumerValidator {
       emailTaken: this.consumerRepository.isEmailTaken(
         formData.email,
         excludeId,
-        'concessionaire'
+        'consumer'
       ),
       phoneTaken: this.consumerRepository.isPhoneTaken(
         formData.phoneNumber,
         excludeId,
-        'concessionaire'
+        'consumer'
       ),
       meterNumberTaken: this.consumerRepository.isMeterNumberTaken(
         formData.meterNumber,

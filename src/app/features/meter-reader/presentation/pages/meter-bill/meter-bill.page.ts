@@ -4,7 +4,7 @@ import {
   ModalController,
   ToastController,
 } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { CapacitorThermalPrinter } from 'capacitor-thermal-printer';
 import { finalize } from 'rxjs/operators';
 import { MeterBillDto } from '../../../application/dto/meter-bill.dto';
@@ -15,6 +15,9 @@ import { MeterReadingDto } from '../../../application/dto/meter-reading.dto';
 import { MeterReadingEntity } from '../../../domain/entities/meter-reading.entity';
 import { MeterReadingUseCase } from '../../../application/use-cases/meter-reading.usecase';
 import { Capacitor } from '@capacitor/core';
+import { MeterReadingBillingRepository } from '../../../domain/repositories/meter-reading-billing.repository';
+import { MeterReadingBillingDto } from '../../../application/dto/meter-reading-billing.dto';
+import { MeterReadingBillingUseCase } from '../../../application/use-cases/meter-reading-billing.usecase';
 
 // Define type for backend validation errors
 interface ValidationErrors {
@@ -36,7 +39,8 @@ export class MeterBillPage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private readingUseCase: MeterReadingUseCase,
-    private meterUseCase: MeterBillUseCase
+    private meterUseCase: MeterBillUseCase,
+    private meterReadingBilling: MeterReadingBillingUseCase
   ) {}
 
   ngOnInit() {
@@ -103,62 +107,59 @@ export class MeterBillPage implements OnInit {
     });
 
     modal.onDidDismiss().then(async (result) => {
-      console.log('Modal dismissed:', result); // Debug log
       if (result.data?.submitted) {
-        if (Capacitor.getPlatform() === 'web') {
-          console.log('Printing receipt:', result.data?.formData);
-          return;
-        }
+        console.log(result.data.formData);
+        const formData = result.data.formData as MeterReadingBillingDto;
 
         try {
+          // 1️⃣ Store to backend first
+          const { reading, billing } = await firstValueFrom(
+            this.meterReadingBilling.execute(formData)
+          );
+
+          this.showSuccessMessage('Meter reading & billing saved!');
+
+          // 2️⃣ Then print
           const receiptText = `
-            Customer   : ${result.data?.formData.concessionaireName}
-            Account #  : ${result.data?.formData.accountNumber}
-            Meter #    : ${result.data?.formData.meterNumber}
-            -----------------------------
-            Previous   : ${result.data?.formData.previousReading}
-            Current    : ${result.data?.formData.currentReading}
-            Consumption: ${result.data?.formData.consumption} cu.m.
-            Amount Due : ${result.data?.formData.amountDue.toFixed(2)} PHP
-            -----------------------------
-            Date: ${new Date().toLocaleDateString()}
-          `;
+Customer   : ${this.meterBill?.consumerName}
+Account #  : ${this.meterBill?.accountNumber}
+Meter #    : ${this.meterBill?.meterNumber}
+-----------------------------
+Previous   : ${reading.previousReading}
+Current    : ${reading.presentReading}
+Consumption: ${reading.consumption} cu.m.
+Amount Due : ${billing.amountDue} PHP
+-----------------------------
+Date: ${new Date().toLocaleDateString()}
+      `;
 
-          await CapacitorThermalPrinter.begin()
-            // Company Header
-            .align('center')
-            .bold()
-            .text('MacArthur Waterworks\n')
-            .text('System & Services\n')
-            .text('Municipality of MacArthur\n')
-            .text("Tel No's: 535-0147, 332-6345\n")
-            .clearFormatting()
-            .text('-----------------------------\n')
+          if (Capacitor.getPlatform() !== 'web') {
+            await CapacitorThermalPrinter.begin()
+              .align('center')
+              .bold()
+              .text('MacArthur Waterworks\n')
+              .text('System & Services\n')
+              .text('Municipality of MacArthur\n')
+              .text("Tel No's: 535-0147, 332-6345\n")
+              .clearFormatting()
+              .text('-----------------------------\n')
+              .doubleHeight()
+              .bold()
+              .text('WATER BILL RECEIPT\n\n')
+              .clearFormatting()
+              .align('left')
+              .text(receiptText + '\n')
+              .align('center')
+              .qr(`https://mac-wss.cellop.site/payment/${this.meterBill?.accountNumber}`)
+              .text('\nThank you for your payment!\n')
+              .feedCutPaper()
+              .write();
 
-            // Title
-            .doubleHeight()
-            .bold()
-            .text('WATER BILL RECEIPT\n\n')
-            .clearFormatting()
-
-            // Details
-            .align('left')
-            .text(receiptText + '\n')
-
-            // QR Code for validation
-            .align('center')
-            .qr(`${result.data?.formData.accountNumber}-${Date.now()}`)
-
-            // Footer
-            .text('\nThank you for your payment!\n')
-            .feedCutPaper()
-            .write();
-
-          this.showSuccessMessage('Bill printed successfully!');
-
+            this.showSuccessMessage('Bill printed successfully!');
+          }
         } catch (error) {
-          this.showErrorMessage('Failed to print receipt. Please try again.');
-          console.error('Error printing receipt:', error);
+          this.showErrorMessage('Failed to save meter reading.');
+          console.error(error);
         }
       }
     });

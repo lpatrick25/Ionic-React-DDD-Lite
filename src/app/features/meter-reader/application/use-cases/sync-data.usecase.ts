@@ -13,7 +13,7 @@ import {
   USER_REPO_REMOTE,
   USER_REPO_LOCAL,
 } from './injection-tokens';
-import { ConcessionaireRepository } from '../../domain/repositories/concessionaire.repository';
+import { ConsumerRepository } from '../../domain/repositories/consumer.repository';
 import { MeterRepository } from '../../domain/repositories/meter.repository';
 import { MeterReadingRepository } from '../../domain/repositories/meter-readings.repository';
 import { BillingRepository } from '../../domain/repositories/billing.repository';
@@ -29,9 +29,9 @@ export class SyncDataUseCase {
     private localUserRepo: UserRepository,
 
     @Inject(CONCESSIONAIRE_REPO_REMOTE)
-    private remoteConcessionaireRepo: ConcessionaireRepository,
+    private remoteConsumerRepo: ConsumerRepository,
     @Inject(CONCESSIONAIRE_REPO_LOCAL)
-    private localConcessionaireRepo: ConcessionaireRepository,
+    private localConsumerRepo: ConsumerRepository,
 
     @Inject(METER_REPO_REMOTE)
     private remoteMeterRepo: MeterRepository,
@@ -58,14 +58,14 @@ export class SyncDataUseCase {
     // 1. Pull remote data in parallel
     const [
       users,
-      concessionaires,
+      consumers,
       meters,
       meterReadings,
       billings,
       tariffRates,
     ] = await Promise.all([
       this.remoteUserRepo.getAll(),
-      this.remoteConcessionaireRepo.getAll(),
+      this.remoteConsumerRepo.getAll(),
       this.remoteMeterRepo.getAll(),
       this.remoteMeterReadingRepo.getAll(),
       this.remoteBillingRepo.getAll(),
@@ -76,13 +76,13 @@ export class SyncDataUseCase {
     await this.localBillingRepo.clear();
     await this.localMeterReadingRepo.clear();
     await this.localMeterRepo.clear();
-    await this.localConcessionaireRepo.clear();
+    await this.localConsumerRepo.clear();
     await this.localUserRepo.clear();
     await this.localTariffRateRepo.clear();
 
     // 3. Save in PARENT → CHILD order
     await this.localUserRepo.saveAll(users);
-    await this.localConcessionaireRepo.saveAll(concessionaires);
+    await this.localConsumerRepo.saveAll(consumers);
     await this.localMeterRepo.saveAll(meters);
     await this.localMeterReadingRepo.saveAll(meterReadings);
     await this.localBillingRepo.saveAll(billings);

@@ -20,11 +20,11 @@ export interface UserRepository {
   isEmailTaken(
     email: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean>;
   isPhoneTaken(
     phoneNumber: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean>;
 }

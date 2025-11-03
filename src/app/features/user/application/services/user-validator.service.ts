@@ -18,7 +18,7 @@ export class UserValidator {
   validateEmail(
     email: string,
     excludeId?: number,
-    type: 'user' | 'concessionaire' = 'user'
+    type: 'user' | 'consumer' = 'user'
   ): Observable<boolean> {
     return this.userRepository.isEmailTaken(email, excludeId, type);
   }
@@ -26,7 +26,7 @@ export class UserValidator {
   validatePhone(
     phoneNumber: string,
     excludeId?: number,
-    type: 'user' | 'concessionaire' = 'user'
+    type: 'user' | 'consumer' = 'user'
   ): Observable<boolean> {
     return this.userRepository.isPhoneTaken(phoneNumber, excludeId, type);
   }

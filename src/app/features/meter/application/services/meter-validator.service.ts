@@ -17,11 +17,11 @@ export class MeterValidator {
 
   validate(formData: MeterFormData, excludeId?: number): Observable<void> {
     // Basic required fields
-    if (!formData.concessionaireId || !formData.installationDate) {
+    if (!formData.consumerId || !formData.installationDate) {
       return throwError(
         () =>
           new Error(
-            'Concessionaire ID, Meter Number, Installation Date and Service Address are required'
+            'Consumer ID, Meter Number, Installation Date and Service Address are required'
           )
       );
     }

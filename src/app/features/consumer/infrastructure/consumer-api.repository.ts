@@ -122,7 +122,7 @@ export class ConsumerApiRepository implements ConsumerRepository {
   isEmailTaken(
     email: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean> {
     let params = new HttpParams().set('email', email);
     if (excludeId) params = params.set('exclude_id', excludeId.toString());
@@ -136,7 +136,7 @@ export class ConsumerApiRepository implements ConsumerRepository {
   isPhoneTaken(
     phone: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean> {
     let params = new HttpParams().set('phone_number', phone);
     if (excludeId) params = params.set('exclude_id', excludeId.toString());

@@ -38,7 +38,7 @@ export class SQLiteService {
 
     // Schema definition
     const schema = `
-      CREATE TABLE IF NOT EXISTS concessionaires (
+      CREATE TABLE IF NOT EXISTS consumers (
         id INTEGER PRIMARY KEY,
         account_number TEXT UNIQUE,
         meter_number TEXT UNIQUE,
@@ -57,11 +57,11 @@ export class SQLiteService {
       );
       CREATE TABLE IF NOT EXISTS meters (
         id INTEGER PRIMARY KEY,
-        concessionaire_id INTEGER,
+        consumer_id INTEGER,
         installation_date TEXT,
         created_at TEXT,
         updated_at TEXT,
-        FOREIGN KEY (concessionaire_id) REFERENCES concessionaires(id)
+        FOREIGN KEY (consumer_id) REFERENCES consumers(id)
       );
       CREATE TABLE IF NOT EXISTS meter_readings (
         id INTEGER PRIMARY KEY,
@@ -78,7 +78,7 @@ export class SQLiteService {
       CREATE TABLE IF NOT EXISTS billings (
         id INTEGER PRIMARY KEY,
         bill_no TEXT,
-        concessionaire_id INTEGER,
+        consumer_id INTEGER,
         meter_reading_id INTEGER,
         billing_month TEXT,
         payment_deadline TEXT,
@@ -87,7 +87,7 @@ export class SQLiteService {
         status TEXT,
         created_at TEXT,
         updated_at TEXT,
-        FOREIGN KEY (concessionaire_id) REFERENCES concessionaires(id),
+        FOREIGN KEY (consumer_id) REFERENCES consumers(id),
         FOREIGN KEY (meter_reading_id) REFERENCES meter_readings(id)
       );
       CREATE TABLE IF NOT EXISTS tariff_rates (

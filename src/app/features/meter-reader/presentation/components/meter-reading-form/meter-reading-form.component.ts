@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { finalize, Observable } from 'rxjs';
 import { MeterReadingEntity } from '../../../domain/entities/meter-reading.entity';
 import { MeterReadingUseCase } from '../../../application/use-cases/meter-reading.usecase';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 // Define error message structure
 interface ErrorMessageConfig {
@@ -64,7 +65,8 @@ export class MeterReadingFormComponent
     modalCtrl: ModalController,
     private loadingController: LoadingController,
     private readingUseCase: MeterReadingUseCase,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private authService: AuthService
   ) {
     super(fb, modalCtrl);
   }
@@ -200,14 +202,18 @@ export class MeterReadingFormComponent
       return;
     }
 
+    const currentUser = this.authService.getCurrentUser();
+
     const formData = {
       accountNumber: this.entity?.accountNumber,
-      concessionaireName: this.entity?.concessionaireName,
+      consumerName: this.entity?.consumerName,
       meterNumber: this.entity?.meterNumber,
       previousReading: this.entity?.previousReading,
       currentReading: Number(this.form.value.currentReading),
       consumption: this.meterReading?.consumption,
       amountDue: this.meterReading?.amountDue,
+      readingDate: new Date().toISOString().split('T')[0],
+      reader_id: currentUser?.id ?? null,
     };
 
     this.isLoading = true;

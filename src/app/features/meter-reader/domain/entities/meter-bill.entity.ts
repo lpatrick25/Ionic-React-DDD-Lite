@@ -4,7 +4,7 @@ export interface MeterBillApiResponse {
   message: string;
   content: {
     meter_number: string;
-    concessionaire_name: string;
+    consumer_name: string;
     account_number: string;
     previous_reading: number;
   };
@@ -13,7 +13,7 @@ export interface MeterBillApiResponse {
 // Domain MeterBill model
 export interface MeterBill {
   meterNumber: string;
-  concessionaireName: string;
+  consumerName: string;
   accountNumber: string;
   previousReading: number;
 }
@@ -21,7 +21,7 @@ export interface MeterBill {
 // Entity
 export class MeterBillEntity implements MeterBill {
   meterNumber: string = '';
-  concessionaireName: string = '';
+  consumerName: string = '';
   accountNumber: string = '';
   previousReading: number = 0;
 
@@ -34,7 +34,7 @@ export class MeterBillEntity implements MeterBill {
 
     return new MeterBillEntity({
       meterNumber: content.meter_number,
-      concessionaireName: content.concessionaire_name,
+      consumerName: content.consumer_name,
       accountNumber: content.account_number,
       previousReading: content.previous_reading,
     });

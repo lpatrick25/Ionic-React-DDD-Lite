@@ -4,10 +4,11 @@ export const API_ENDPOINTS = {
   BASE_URL: environment.apiUrl,
   LOGIN: '/login',
   USERS: '/users',
-  CONSUMERS: '/concessionaires',
+  CONSUMERS: '/consumers',
   METERS: '/meters',
   SEARCH_METER: '/meter-details',
   CALCULATE_BILL: '/calculate-amount-due',
+  STORE_METER_READING: '/store-meter-reading',
 } as const;
 
 export const ROLES = {

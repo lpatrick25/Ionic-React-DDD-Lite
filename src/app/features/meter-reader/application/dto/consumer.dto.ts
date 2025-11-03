@@ -1,6 +1,6 @@
-import { Concessionaire } from "../../domain/entities/concessionaire.entity";
+import { Consumer } from "../../domain/entities/consumer.entity";
 
-export interface ConcessionaireDto {
+export interface ConsumerDto {
   id: number;
   account_number: string;
   meter_number: string;
@@ -18,9 +18,9 @@ export interface ConcessionaireDto {
   updated_at: string;
 }
 
-export const mapConcessionaireDtoToEntity = (
-  dto: ConcessionaireDto
-): Concessionaire => ({
+export const mapConsumerDtoToEntity = (
+  dto: ConsumerDto
+): Consumer => ({
   id: dto.id,
   accountNumber: dto.account_number,
   meterNumber: dto.meter_number,

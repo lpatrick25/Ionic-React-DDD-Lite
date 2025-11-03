@@ -117,7 +117,7 @@ export class UserApiRepository implements UserRepository {
   isEmailTaken(
     email: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean> {
     let params = new HttpParams().set('email', email);
     if (excludeId) params = params.set('exclude_id', excludeId.toString());
@@ -131,7 +131,7 @@ export class UserApiRepository implements UserRepository {
   isPhoneTaken(
     phoneNumber: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean> {
     let params = new HttpParams().set('phone_number', phoneNumber);
     if (excludeId) params = params.set('exclude_id', excludeId.toString());

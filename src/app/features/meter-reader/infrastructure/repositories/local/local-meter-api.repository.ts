@@ -15,7 +15,7 @@ export class LocalMeterApiRepository implements MeterRepository {
     );
     return result.values.map((row: any) => ({
       id: row.id,
-      concessionaireId: row.concessionaire_id,
+      consumerId: row.consumer_id,
       installationDate: row.installation_date,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
@@ -29,13 +29,13 @@ export class LocalMeterApiRepository implements MeterRepository {
   async saveAll(meters: Meter[]): Promise<void> {
     const query = `
       INSERT INTO meters (
-        id, concessionaire_id, installation_date, created_at, updated_at
+        id, consumer_id, installation_date, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?)
     `;
     for (const m of meters) {
       await this.sqliteService.executeQuery(query, [
         m.id,
-        m.concessionaireId,
+        m.consumerId,
         m.installationDate,
         m.createdAt,
         m.updatedAt,

@@ -20,13 +20,13 @@ interface ErrorMessageConfig {
 }
 
 interface ErrorMessages {
-  concessionaireId: ErrorMessageConfig;
+  consumerId: ErrorMessageConfig;
   installationDate: ErrorMessageConfig;
 }
 
 // Valid form field names
 type FormFieldName =
-  | 'concessionaireId'
+  | 'consumerId'
   | 'installationDate';
 
 @Component({
@@ -71,7 +71,7 @@ export class MeterFormComponent
   createForm(): FormGroup {
     console.log('Creating form with entity ID:', this.entity?.id);
     return this.fb.group({
-      concessionaireId: ['', [Validators.required]],
+      consumerId: ['', [Validators.required]],
       installationDate: ['', [Validators.required]],
     });
   }
@@ -79,29 +79,29 @@ export class MeterFormComponent
   populateForm(meter: MeterEntity): void {
     console.log('Populating form with meter:', meter);
     this.form.patchValue({
-      concessionaireId: meter.concessionaireId,
+      consumerId: meter.consumerId,
       installationDate: this.formatDateForInput(meter.installationDate),
     });
   }
 
   mapFormToData(): MeterFormData {
     return {
-      concessionaireId: this.form.value.concessionaireId,
+      consumerId: this.form.value.consumerId,
       installationDate: this.form.value.installationDate,
     };
   }
 
   getFieldLabels(): Record<FormFieldName, string> {
     return {
-      concessionaireId: 'Concessionaire',
+      consumerId: 'Consumer',
       installationDate: 'Installation Date',
     };
   }
 
   getErrorMessages(): Record<FormFieldName, ErrorMessageConfig> {
     return {
-      concessionaireId: {
-        required: 'Concessionaire is required',
+      consumerId: {
+        required: 'Consumer is required',
       },
       installationDate: {
         required: 'Installation date is required',
@@ -111,7 +111,7 @@ export class MeterFormComponent
 
   getDefaultFormValues(): any {
     return {
-      concessionaireId: '',
+      consumerId: '',
       installationDate: '',
       status: true,
     };

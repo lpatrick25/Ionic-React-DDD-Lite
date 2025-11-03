@@ -50,7 +50,7 @@ export class MeterApiRepository implements MeterRepository {
     meterData: Partial<MeterEntity> & { password?: string }
   ): Observable<MeterEntity> {
     const createDto: CreateMeterDto = {
-      concessionaire_id: meterData.concessionaireId!,
+      consumer_id: meterData.consumerId!,
       installation_date: meterData.installationDate!,
     };
 
@@ -68,7 +68,7 @@ export class MeterApiRepository implements MeterRepository {
     meterData: Partial<MeterEntity> & { password?: string }
   ): Observable<MeterEntity> {
     const updateDto: UpdateMeterDto = {
-      concessionaire_id: meterData.concessionaireId,
+      consumer_id: meterData.consumerId,
       installation_date: meterData.installationDate,
     };
 

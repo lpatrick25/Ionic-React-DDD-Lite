@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ConcessionaireRepository } from '../../../domain/repositories/concessionaire.repository';
-import { Concessionaire } from '../../../domain/entities/concessionaire.entity';
+import { ConsumerRepository } from '../../../domain/repositories/consumer.repository';
+import { Consumer } from '../../../domain/entities/consumer.entity';
 import { SQLiteService } from '../../services/SQLiteService';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LocalConcessionaireApiRepository implements ConcessionaireRepository {
+export class LocalConsumerApiRepository implements ConsumerRepository {
   constructor(private sqliteService: SQLiteService) {}
 
-  async getAll(): Promise<Concessionaire[]> {
+  async getAll(): Promise<Consumer[]> {
     const result = await this.sqliteService.executeQuery(
-      'SELECT * FROM concessionaires'
+      'SELECT * FROM consumers'
     );
     return result.values.map((row: any) => ({
       id: row.id,
@@ -33,18 +33,18 @@ export class LocalConcessionaireApiRepository implements ConcessionaireRepositor
   }
 
   async clear(): Promise<void> {
-    await this.sqliteService.executeQuery('DELETE FROM concessionaires');
+    await this.sqliteService.executeQuery('DELETE FROM consumers');
   }
 
-  async saveAll(concessionaires: Concessionaire[]): Promise<void> {
+  async saveAll(consumers: Consumer[]): Promise<void> {
     const query = `
-      INSERT INTO concessionaires (
+      INSERT INTO consumers (
         id, account_number, meter_number, first_name, middle_name, last_name,
         extension_name, address, street_address, email, phone_number, meter_type,
         status, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    for (const c of concessionaires) {
+    for (const c of consumers) {
       await this.sqliteService.executeQuery(query, [
         c.id,
         c.accountNumber,

@@ -16,12 +16,12 @@ export interface ConsumerRepository {
   isEmailTaken(
     email: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean>;
   isPhoneTaken(
     phone: string,
     excludeId?: number,
-    type?: 'user' | 'concessionaire'
+    type?: 'user' | 'consumer'
   ): Observable<boolean>;
   isMeterNumberTaken(
     meterNumber: string,

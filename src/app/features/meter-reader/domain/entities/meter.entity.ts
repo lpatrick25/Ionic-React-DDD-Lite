@@ -1,6 +1,6 @@
 export interface Meter {
   id: number;
-  concessionaireId: number;
+  consumerId: number;
   installationDate: string;
   createdAt: string;
   updatedAt: string;

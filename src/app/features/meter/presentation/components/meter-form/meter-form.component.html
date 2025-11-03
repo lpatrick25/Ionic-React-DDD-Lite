@@ -30,14 +30,14 @@
       <!-- Consumer Selection -->
       <ion-item
         [class.invalid]="
-          f['concessionaireId'].invalid && f['concessionaireId'].touched
+          f['consumerId'].invalid && f['consumerId'].touched
         "
       >
         <ion-label position="stacked">
-          Concessionaire <ion-text color="danger">*</ion-text>
+          Consumer <ion-text color="danger">*</ion-text>
         </ion-label>
         <ion-select
-          formControlName="concessionaireId"
+          formControlName="consumerId"
           interface="action-sheet"
           placeholder="Select consumer"
         >
@@ -49,12 +49,12 @@
           </ion-select-option>
         </ion-select>
         <ion-note
-          *ngIf="f['concessionaireId'].invalid && f['concessionaireId'].touched"
+          *ngIf="f['consumerId'].invalid && f['consumerId'].touched"
           class="inline-error"
           slot="error"
         >
           <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-          {{ getErrorMessage("concessionaireId") }}
+          {{ getErrorMessage("consumerId") }}
         </ion-note>
       </ion-item>
 

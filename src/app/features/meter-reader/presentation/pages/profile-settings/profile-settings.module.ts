@@ -29,7 +29,7 @@ import { SyncDataUseCase } from '../../../application/use-cases/sync-data.usecas
 
 // Infrastructure Local
 import { LocalUserApiRepository } from '../../../infrastructure/repositories/local/local-user-api.repository';
-import { LocalConcessionaireApiRepository } from '../../../infrastructure/repositories/local/local-concessionaire-api.repository';
+import { LocalConsumerApiRepository } from '../../../infrastructure/repositories/local/local-consumer-api.repository';
 import { LocalMeterApiRepository } from '../../../infrastructure/repositories/local/local-meter-api.repository';
 import { LocalMeterReadingApiRepository } from '../../../infrastructure/repositories/local/local-meter-reading-api.repository';
 import { LocalBillingApiRepository } from '../../../infrastructure/repositories/local/local-billing-api.repository';
@@ -37,7 +37,7 @@ import { LocalTariffRateApiRepository } from '../../../infrastructure/repositori
 
 // Infrastructure Remote
 import { RemoteUserRepository } from '../../../infrastructure/repositories/remote/remote-user-repository';
-import { RemoteConcessionaireRepository } from '../../../infrastructure/repositories/remote/remote-concessionaire-api.repository';
+import { RemoteConsumerRepository } from '../../../infrastructure/repositories/remote/remote-consumer-api.repository';
 import { RemoteMeterRepository } from '../../../infrastructure/repositories/remote/remote-meter-api.repository';
 import { RemoteMeterReadingRepository } from '../../../infrastructure/repositories/remote/remote-meter-reading-api.repository';
 import { RemoteBillingRepository } from '../../../infrastructure/repositories/remote/remote-billing-api.repository';
@@ -60,7 +60,7 @@ import { ApiService } from '../../../infrastructure/services/ApiService';
   providers: [
     //Local
     LocalBillingApiRepository,
-    LocalConcessionaireApiRepository,
+    LocalConsumerApiRepository,
     LocalMeterApiRepository,
     LocalMeterReadingApiRepository,
     LocalTariffRateApiRepository,
@@ -68,7 +68,7 @@ import { ApiService } from '../../../infrastructure/services/ApiService';
 
     //Remote
     RemoteBillingRepository,
-    RemoteConcessionaireRepository,
+    RemoteConsumerRepository,
     RemoteMeterRepository,
     RemoteMeterReadingRepository,
     RemoteTariffRateRepository,
@@ -83,11 +83,11 @@ import { ApiService } from '../../../infrastructure/services/ApiService';
 
     {
       provide: CONCESSIONAIRE_REPO_REMOTE,
-      useClass: RemoteConcessionaireRepository,
+      useClass: RemoteConsumerRepository,
     },
     {
       provide: CONCESSIONAIRE_REPO_LOCAL,
-      useClass: LocalConcessionaireApiRepository,
+      useClass: LocalConsumerApiRepository,
     },
 
     { provide: METER_REPO_REMOTE, useClass: RemoteMeterRepository },

@@ -1,4 +1,4 @@
-export interface Concessionaire {
+export interface Consumer {
   id: number;
   accountNumber: string;
   meterNumber: string;

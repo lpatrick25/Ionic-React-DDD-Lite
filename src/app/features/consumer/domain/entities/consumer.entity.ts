@@ -10,7 +10,7 @@ export interface ConsumerApiResponse {
   last_name: string;
   extension_name?: string | null;
   fullname?: string;
-  address: string;
+  brgy: string;
   street_address?: string | null;
   phone_number: string;
   email: string;
@@ -112,7 +112,7 @@ export class ConsumerEntity implements Consumer {
       middleName: apiConsumer.middle_name,
       lastName: apiConsumer.last_name,
       extensionName: apiConsumer.extension_name,
-      address: apiConsumer.address,
+      address: apiConsumer.brgy,
       streetAddress: apiConsumer.street_address,
       phoneNumber: apiConsumer.phone_number,
       email: apiConsumer.email,

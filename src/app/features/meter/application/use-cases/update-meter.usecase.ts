@@ -25,7 +25,7 @@ export class UpdateMeterUseCase {
     return this.validator.validate(formData, id).pipe(
       switchMap(() => {
         const updatedMeter: Partial<MeterEntity> & { password?: string } = {
-          concessionaireId: formData.concessionaireId,
+          consumerId: formData.consumerId,
           installationDate: formData.installationDate,
         };
 

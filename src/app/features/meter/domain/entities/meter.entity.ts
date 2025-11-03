@@ -1,21 +1,21 @@
 import { Status } from 'src/app/core/constants/api.constants';
 
 // API Response interfaces - Raw data from backend
-export interface ConcessionaireApiResponse {
+export interface ConsumerApiResponse {
   id: number;
   account_number: string;
   full_name: string;
   meter_number: string;
   status: Status;
-  address: string;
+  brgy: string;
   meter_type: string;
 }
 
 export interface MeterApiResponse {
   id: number;
-  concessionaire_id: number;
+  consumer_id: number;
   installation_date: string;
-  concessionaire?: ConcessionaireApiResponse | null;
+  consumer?: ConsumerApiResponse | null;
 }
 
 export interface ApiMeterResponse {
@@ -38,7 +38,7 @@ export interface Meter {
   status: Status;
   meterNumber: string;
   installationDate: string;
-  concessionaireId: number;
+  consumerId: number;
 
   isActive(): boolean;
 }
@@ -63,7 +63,7 @@ export class MeterEntity implements Meter {
   status: Status = 'Active';
   meterNumber: string = '';
   installationDate: string = '';
-  concessionaireId: number = 0;
+  consumerId: number = 0;
 
   constructor(partial: Partial<Meter> = {}) {
     Object.assign(this, partial);
@@ -77,13 +77,13 @@ export class MeterEntity implements Meter {
   static fromApiResponse(apiMeter: MeterApiResponse): MeterEntity {
     return new MeterEntity({
       id: apiMeter.id,
-      accountNumber: apiMeter.concessionaire?.account_number,
-      fullName: apiMeter.concessionaire?.full_name ?? '',
-      address: apiMeter.concessionaire?.address ?? '',
-      status: apiMeter.concessionaire?.status ?? 'Inactive',
-      meterNumber: apiMeter.concessionaire?.meter_number ?? '',
+      accountNumber: apiMeter.consumer?.account_number,
+      fullName: apiMeter.consumer?.full_name ?? '',
+      address: apiMeter.consumer?.brgy ?? '',
+      status: apiMeter.consumer?.status ?? 'Inactive',
+      meterNumber: apiMeter.consumer?.meter_number ?? '',
       installationDate: apiMeter.installation_date, // may need parsing if formatted
-      concessionaireId: apiMeter.concessionaire_id,
+      consumerId: apiMeter.consumer_id,
     });
   }
 

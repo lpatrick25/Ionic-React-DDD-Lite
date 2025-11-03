@@ -3,7 +3,7 @@ import { Billing } from "../../domain/entities/billing.entity";
 export interface BillingDto {
   id: number;
   bill_no: string;
-  concessionaire_id: number;
+  consumer_id: number;
   meter_reading_id: number;
   billing_month: string;
   payment_deadline: string;
@@ -17,7 +17,7 @@ export interface BillingDto {
 export const mapBillingDtoToEntity = (dto: BillingDto): Billing => ({
   id: dto.id,
   billNo: dto.bill_no,
-  concessionaireId: dto.concessionaire_id,
+  consumerId: dto.consumer_id,
   meterReadingId: dto.meter_reading_id,
   billingMonth: dto.billing_month,
   paymentDeadline: dto.payment_deadline,

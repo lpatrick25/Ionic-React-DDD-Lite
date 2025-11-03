@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ConcessionaireDto } from '../../application/dto/concessionaire.dto';
+import { ConsumerDto } from '../../application/dto/consumer.dto';
 import { MeterDto } from '../../application/dto/meter.dto';
 import { BillingDto } from '../../application/dto/billing.dto';
 import { TariffRateDto } from '../../application/dto/tariff-rate.dto';
@@ -13,14 +13,14 @@ import { MeterReadingsDto } from '../../application/dto/meter-reading.dto';
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'http://192.168.100.8:8000/api';
+  private baseUrl = 'https://mac-wss.cellop.site/api';
 
   constructor(private http: HttpClient) {}
 
-  getConcessionaires(): Observable<ConcessionaireDto[]> {
+  getConsumers(): Observable<ConsumerDto[]> {
     return this.http
-      .get<{ code: number; message: string; content: ConcessionaireDto[] }>(
-        `${this.baseUrl}/offlineConcessionaire`
+      .get<{ code: number; message: string; content: ConsumerDto[] }>(
+        `${this.baseUrl}/offlineConsumer`
       )
       .pipe(map((response) => response.content));
   }

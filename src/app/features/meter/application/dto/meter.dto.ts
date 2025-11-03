@@ -1,17 +1,17 @@
 import { Status } from "src/app/core/constants/api.constants";
 
 export interface CreateMeterDto {
-  concessionaire_id: number;
+  consumer_id: number;
   installation_date: string;
 }
 
 export interface UpdateMeterDto {
-  concessionaire_id?: number;
+  consumer_id?: number;
   installation_date?: string;
 }
 
 export interface MeterFormData {
-  concessionaireId: number;
+  consumerId: number;
   installationDate: string;
 }
 

@@ -90,10 +90,10 @@ export class ConsumerFormComponent
               this.consumerValidator.validatePhone(
                 phone,
                 excludeId,
-                'concessionaire' as const
+                'consumer' as const
               ),
             this.entity?.id ? Number(this.entity.id) : null,
-            'concessionaire' as const
+            'consumer' as const
           ),
         ],
       ],
@@ -106,10 +106,10 @@ export class ConsumerFormComponent
               this.consumerValidator.validateEmail(
                 email,
                 excludeId,
-                'concessionaire' as const
+                'consumer' as const
               ),
             this.entity?.id ? Number(this.entity.id) : null,
-            'concessionaire' as const
+            'consumer' as const
           ),
         ],
       ],

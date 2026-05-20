@@ -18,6 +18,7 @@ import { Capacitor } from '@capacitor/core';
 import { MeterReadingBillingRepository } from '../../../domain/repositories/meter-reading-billing.repository';
 import { MeterReadingBillingDto } from '../../../application/dto/meter-reading-billing.dto';
 import { MeterReadingBillingUseCase } from '../../../application/use-cases/meter-reading-billing.usecase';
+import { BillingExistsModalComponent } from '../../components/billing-exists-modal/billing-exists-modal.component';
 
 // Define type for backend validation errors
 interface ValidationErrors {
@@ -47,6 +48,52 @@ export class MeterBillPage implements OnInit {
     console.log('MeterBillPage initialized');
   }
 
+  // async onSearch(formData: MeterBillDto) {
+  //   console.log('Handling meter submit:', formData);
+  //   this.isLoading$.next(true);
+
+  //   const loading = await this.loadingController.create({
+  //     message: 'Searching meter...',
+  //   });
+  //   await loading.present();
+
+  //   this.meterUseCase
+  //     .execute(formData)
+  //     .pipe(
+  //       finalize(async () => {
+  //         this.isLoading$.next(false);
+  //         await loading.dismiss();
+  //       })
+  //     )
+  //     .subscribe({
+  //       next: async (meter: MeterBillEntity) => {
+  //         console.log('Meter found:', meter);
+  //         this.showSuccessMessage('Meter found');
+
+  //         this.meterBill = meter;
+  //         await this.openMeterModal();
+  //       },
+  //       error: (error) => {
+  //         console.error('Error saving meter:', error);
+  //         // Parse backend validation errors with proper typing
+  //         const errorMessage = error.message || `Failed to search meter`;
+  //         const validationErrors = error.error?.errors as
+  //           | ValidationErrors
+  //           | undefined;
+
+  //         let detailedMessage = errorMessage;
+  //         if (validationErrors && Object.keys(validationErrors).length > 0) {
+  //           detailedMessage +=
+  //             ': ' +
+  //             Object.entries(validationErrors)
+  //               .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+  //               .join('; ');
+  //         }
+
+  //         this.showErrorMessage(detailedMessage);
+  //       },
+  //     });
+  // }
   async onSearch(formData: MeterBillDto) {
     console.log('Handling meter submit:', formData);
     this.isLoading$.next(true);
@@ -68,6 +115,23 @@ export class MeterBillPage implements OnInit {
         next: async (meter: MeterBillEntity) => {
           console.log('Meter found:', meter);
           this.showSuccessMessage('Meter found');
+
+          if (meter.billingExists) {
+            const modal = await this.modalController.create({
+              component: BillingExistsModalComponent,
+              componentProps: {
+                message: 'Billing already exists for the latest reading.',
+                meterDetails: {
+                  meterNumber: meter.meterNumber,
+                  consumerName: meter.consumerName,
+                  accountNumber: meter.accountNumber,
+                  previousReading: meter.previousReading,
+                },
+              },
+            });
+            await modal.present();
+            return; // exit early
+          }
 
           this.meterBill = meter;
           await this.openMeterModal();
@@ -150,15 +214,26 @@ Date: ${new Date().toLocaleDateString()}
               .align('left')
               .text(receiptText + '\n')
               .align('center')
-              .qr(`https://mac-wss.cellop.site/payment/${this.meterBill?.accountNumber}`)
+              .qr(
+                `https://mac-wss.site/accountPayment/${this.meterBill?.accountNumber}`
+              )
               .text('\nThank you for your payment!\n')
               .feedCutPaper()
               .write();
 
             this.showSuccessMessage('Bill printed successfully!');
           }
-        } catch (error) {
-          this.showErrorMessage('Failed to save meter reading.');
+        } catch (error: any) {
+          let message = 'Failed to save meter reading.';
+
+          // If backend returns a validation error
+          if (error?.error?.message) {
+            message = error.error.message; // Use the actual backend message
+          } else if (error?.message) {
+            message = error.message;
+          }
+
+          this.showErrorMessage(message);
           console.error(error);
         }
       }

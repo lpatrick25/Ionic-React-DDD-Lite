@@ -13,7 +13,7 @@ import { MeterReadingsDto } from '../../application/dto/meter-reading.dto';
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'https://mac-wss.cellop.site/api';
+  private baseUrl = 'https://mac-wss.site/api';
 
   constructor(private http: HttpClient) {}
 

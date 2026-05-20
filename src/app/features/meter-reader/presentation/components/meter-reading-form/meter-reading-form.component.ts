@@ -149,10 +149,10 @@ export class MeterReadingFormComponent
 
       this.isLoading = true;
 
-      const loading = await this.loadingController.create({
-        message: 'Calculating Bill',
-      });
-      await loading.present();
+      // const loading = await this.loadingController.create({
+      //   message: 'Calculating Bill',
+      // });
+      // await loading.present();
 
       let request$: Observable<MeterReadingEntity> =
         this.readingUseCase.execute(payload);
@@ -161,7 +161,7 @@ export class MeterReadingFormComponent
         .pipe(
           finalize(async () => {
             this.isLoading = false;
-            await loading.dismiss();
+            // await loading.dismiss();
           })
         )
         .subscribe({

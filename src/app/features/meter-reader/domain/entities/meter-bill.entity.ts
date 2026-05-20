@@ -2,6 +2,7 @@
 export interface MeterBillApiResponse {
   code: number;
   message: string;
+  billing_exists: boolean;
   content: {
     meter_number: string;
     consumer_name: string;
@@ -12,6 +13,7 @@ export interface MeterBillApiResponse {
 
 // Domain MeterBill model
 export interface MeterBill {
+  billingExists: boolean;
   meterNumber: string;
   consumerName: string;
   accountNumber: string;
@@ -20,6 +22,7 @@ export interface MeterBill {
 
 // Entity
 export class MeterBillEntity implements MeterBill {
+  billingExists: boolean = false;
   meterNumber: string = '';
   consumerName: string = '';
   accountNumber: string = '';
@@ -33,6 +36,7 @@ export class MeterBillEntity implements MeterBill {
     const { content } = apiResponse;
 
     return new MeterBillEntity({
+      billingExists: apiResponse.billing_exists,
       meterNumber: content.meter_number,
       consumerName: content.consumer_name,
       accountNumber: content.account_number,

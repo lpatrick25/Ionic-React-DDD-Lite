@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Billing Exists</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card color="light">
+    <ion-card-header>
+      <ion-card-title>{{ message }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="meterDetails">
+      <ion-item lines="none">
+        <ion-label><strong>Meter Number:</strong></ion-label>
+        <ion-text>{{ meterDetails.meterNumber }}</ion-text>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label><strong>Consumer Name:</strong></ion-label>
+        <ion-text>{{ meterDetails.consumerName }}</ion-text>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label><strong>Account Number:</strong></ion-label>
+        <ion-text>{{ meterDetails.accountNumber }}</ion-text>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label><strong>Previous Reading:</strong></ion-label>
+        <ion-text>{{ meterDetails.previousReading }} cu.m.</ion-text>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="full" color="primary" (click)="dismiss()">
+    Close
+  </ion-button>
+</ion-content>

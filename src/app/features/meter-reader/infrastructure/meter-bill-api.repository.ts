@@ -4,7 +4,10 @@ import { map, catchError } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import { API_ENDPOINTS } from '../../../core/constants/api.constants';
 import { MeterBillDto } from '../application/dto/meter-bill.dto';
-import { MeterBillApiResponse, MeterBillEntity } from '../domain/entities/meter-bill.entity';
+import {
+  MeterBillApiResponse,
+  MeterBillEntity,
+} from '../domain/entities/meter-bill.entity';
 import { MeterBillRepository } from '../domain/repositories/meter-bill.repository';
 
 @Injectable({
